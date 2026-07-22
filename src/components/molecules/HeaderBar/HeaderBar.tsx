@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Svg, { Path } from 'react-native-svg';
 import { Text, Row } from '../../atoms';
-import { colors, spacing, typography, shadows } from '../../../theme';
+import { colors, spacing, typography, shadows, borderRadius } from '../../../theme';
 import { useTranslation } from '../../../i18n';
 import { useNodeConnectionStatus } from '../../../hooks/useNodeConnectionStatus';
 import { useRewardCounter } from '../../../hooks/useRewardCounter';
