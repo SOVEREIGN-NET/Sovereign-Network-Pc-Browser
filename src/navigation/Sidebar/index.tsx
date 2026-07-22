@@ -94,15 +94,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           ))}
         </Column>
       </ScrollView>
-
-      {!isCollapsed && (
-        <View style={styles.footer}>
-          <View style={styles.statusBox}>
-            <View style={styles.statusDot} />
-            <Text style={styles.statusText}>Network Connected</Text>
-          </View>
-        </View>
-      )}
     </View>
   );
 };
@@ -182,29 +173,6 @@ const styles = StyleSheet.create({
   },
   dividerCollapsed: {
     marginHorizontal: spacing.lg,
-  },
-  footer: {
-    padding: spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-  statusBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    backgroundColor: colors.bg_darkest,
-    padding: spacing.sm,
-    borderRadius: borderRadius.sm,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.success,
-  },
-  statusText: {
-    fontSize: 11,
-    color: colors.text_secondary,
   },
 });
 
