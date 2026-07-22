@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Sidebar, SidebarItem } from './Sidebar';
+import { HeaderBar, Text } from '../components';
 import { colors } from '../theme';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { useSidebar } from '../context/SidebarContext';
