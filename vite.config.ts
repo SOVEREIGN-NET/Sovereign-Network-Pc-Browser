@@ -11,6 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "react-native$": "react-native-web",
+      "react-native": "react-native-web",
       "react-native/Libraries/Utilities/codegenNativeComponent": path.resolve(__dirname, "src/native/shims/codegenNativeComponent.js"),
       "react-native/Libraries/Renderer/shims/NativeComponentRegistry": path.resolve(__dirname, "src/native/shims/NativeComponentRegistry.js"),
       "react-native-keychain": path.resolve(__dirname, "src/native/Keychain.ts"),
