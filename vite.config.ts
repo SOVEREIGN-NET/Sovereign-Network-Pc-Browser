@@ -9,17 +9,16 @@ export default defineConfig({
     global: "window",
   },
   resolve: {
-    alias: {
-      "react-native$": "react-native-web",
-      "react-native": "react-native-web",
-      "react-native/Libraries/Utilities/codegenNativeComponent": path.resolve(__dirname, "src/native/shims/codegenNativeComponent.js"),
-      "react-native/Libraries/Renderer/shims/NativeComponentRegistry": path.resolve(__dirname, "src/native/shims/NativeComponentRegistry.js"),
-      "react-native-keychain": path.resolve(__dirname, "src/native/Keychain.ts"),
-      "react-native-safe-area-context": path.resolve(__dirname, "src/native/SafeAreaShim.tsx"),
-      "@react-native-async-storage/async-storage": path.resolve(__dirname, "src/native/AsyncStorageShim.ts"),
-      "react-native-linear-gradient": path.resolve(__dirname, "src/native/LinearGradientShim.tsx"),
-      "src/native/NativeIdentityProvisioning": path.resolve(__dirname, "src/native/NativeIdentityProvisioning.ts"),
-    },
+    alias: [
+      { find: /^react-native\/Libraries\/Utilities\/codegenNativeComponent$/, replacement: path.resolve(__dirname, "src/native/shims/codegenNativeComponent.js") },
+      { find: /^react-native\/Libraries\/Renderer\/shims\/NativeComponentRegistry$/, replacement: path.resolve(__dirname, "src/native/shims/NativeComponentRegistry.js") },
+      { find: "react-native-keychain", replacement: path.resolve(__dirname, "src/native/Keychain.ts") },
+      { find: "react-native-safe-area-context", replacement: path.resolve(__dirname, "src/native/SafeAreaShim.tsx") },
+      { find: "@react-native-async-storage/async-storage", replacement: path.resolve(__dirname, "src/native/AsyncStorageShim.ts") },
+      { find: "react-native-linear-gradient", replacement: path.resolve(__dirname, "src/native/LinearGradientShim.tsx") },
+      { find: "src/native/NativeIdentityProvisioning", replacement: path.resolve(__dirname, "src/native/NativeIdentityProvisioning.ts") },
+      { find: "react-native", replacement: "react-native-web" },
+    ],
   },
   // Tauri expect a fixed port, fail if not available
   server: {
