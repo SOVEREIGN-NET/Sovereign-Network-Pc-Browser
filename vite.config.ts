@@ -8,6 +8,8 @@ export default defineConfig({
       "react-native": "react-native-web",
       "react-native-keychain": "/src/native/Keychain.ts",
       "react-native-safe-area-context": "/src/native/SafeAreaShim.tsx",
+      "@react-native-async-storage/async-storage": "/src/native/AsyncStorageShim.ts",
+      "react-native-linear-gradient": "/src/native/LinearGradientShim.tsx",
       "src/native/NativeIdentityProvisioning": "/src/native/NativeIdentityProvisioning.ts",
     },
   },
