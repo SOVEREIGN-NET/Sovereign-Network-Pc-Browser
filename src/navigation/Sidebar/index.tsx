@@ -61,11 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               )}
             </TouchableOpacity>
           ))}
-        </Column>
 
-        <Divider style={[styles.divider, isCollapsed && styles.dividerCollapsed]} />
-
-        <Column gap="xs" style={styles.section}>
           {secondaryItems.map((item) => (
             <TouchableOpacity
               key={item.id}
@@ -165,14 +161,6 @@ const styles = StyleSheet.create({
   },
   labelActive: {
     color: colors.primary,
-  },
-  divider: {
-    marginHorizontal: spacing.xl,
-    marginVertical: spacing.md,
-    opacity: 0.3,
-  },
-  dividerCollapsed: {
-    marginHorizontal: spacing.lg,
   },
 });
 
