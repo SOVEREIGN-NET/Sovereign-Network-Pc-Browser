@@ -80,11 +80,9 @@ const DappRow: React.FC<{
 const DashboardScreen: React.FC<any> = ({ navigation }) => {
   const { activeNotice, dismiss } = useNetworkNotices();
   const [urlInput, setUrlInput] = useState('zhtp://central.sov');
-  const scrollY = useRef(new Animated.Value(0)).current;
   const scrollRef = useRef<ScrollView>(null);
 
   const bobAnim = useRef(new Animated.Value(0)).current;
-  const textOpacity = useRef(new Animated.Value(0.5)).current;
 
   useEffect(() => {
     const bob = Animated.loop(
@@ -101,7 +99,7 @@ const DashboardScreen: React.FC<any> = ({ navigation }) => {
   const trendingDapps = useTrendingDapps();
   const loadedDapps = useMemo(() => {
     if (!trendingDapps) return [];
-    return trendingDapps.slice(0, 3).map(d => ({
+    return trendingDapps.slice(0, 10).map(d => ({
       id: d.id,
       name: d.name,
       desc: d.desc,
@@ -112,18 +110,12 @@ const DashboardScreen: React.FC<any> = ({ navigation }) => {
 
   const openBrowser = useCallback((url?: string) => {
     const targetUrl = url || urlInput;
-    // If it's a direct zhtp link, open browser. Otherwise, go to results.
     if (targetUrl.startsWith('zhtp://') && targetUrl.length > 7) {
       navigation.navigate('Browser', { url: targetUrl });
     } else {
       navigation.navigate('Web4SearchResults', { query: targetUrl });
     }
   }, [navigation, urlInput]);
-
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    { useNativeDriver: true }
-  );
 
   const NOTICE_STYLE: Record<'info' | 'warning' | 'error', { bg: string; border: string; text: string; icon: string }> = {
     error:   { bg: '#3D1515', border: '#7B2020', text: '#FF6B6B', icon: '⚠' },
@@ -133,7 +125,7 @@ const DashboardScreen: React.FC<any> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <View style={{ zIndex: 500, position: 'absolute', top: 0, left: 0, right: 0 }}>
+      <View style={{ zIndex: 500 }}>
         <HeaderBar />
         {activeNotice && (
           <Pressable
@@ -147,132 +139,85 @@ const DashboardScreen: React.FC<any> = ({ navigation }) => {
         )}
       </View>
 
-      {/* ── STATIONARY HERO: LOGO + SEARCH ── */}
-      <View style={[styles.fixedHeroContainer, { top: FIXED_HERO_TOP }]} pointerEvents="box-none">
-        <SShieldLogo size={120} />
-        <View style={styles.searchBarWrapper}>
-          <View style={styles.searchBarInner}>
-            <View style={styles.inputContainer}>
-              <TextInput
-                placeholder="Search or enter zhtp://..."
-                placeholderTextColor={colors.text_placeholder}
-                value={urlInput}
-                onChangeText={setUrlInput}
-                onSubmitEditing={() => openBrowser()}
-                autoCapitalize="none"
-                autoCorrect={false}
-                keyboardType="url"
-                returnKeyType="go"
-                style={styles.textInput}
-              />
+      <ScrollView
+        ref={scrollRef}
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={{ paddingBottom: spacing.xxl }}
+        style={{ flex: 1 }}
+      >
+        {/* HERO SECTION */}
+        <View style={styles.heroContainer}>
+          <SShieldLogo size={160} />
+          <View style={styles.searchBarWrapper}>
+            <View style={styles.searchBarInner}>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder="Search or enter zhtp://..."
+                  placeholderTextColor={colors.text_placeholder}
+                  value={urlInput}
+                  onChangeText={setUrlInput}
+                  onSubmitEditing={() => openBrowser()}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={styles.textInput}
+                />
+              </View>
+              <Button onPress={() => openBrowser()} size="sm" variant="primary" style={styles.goButton}>
+                <ArrowIcon direction="right" size={16} color={colors.text_primary} />
+              </Button>
             </View>
-            <Button onPress={() => openBrowser()} size="sm" variant="primary" style={styles.goButton}>
-              <ArrowIcon direction="right" size={16} color={colors.text_primary} />
-            </Button>
+          </View>
+
+          <Animated.View
+            style={[
+              styles.indicatorContainer,
+              {
+                transform: [{ translateY: bobAnim }],
+              },
+            ]}
+          >
+            <Text style={styles.indicatorText}>Scroll down to browse trending domains</Text>
+            <WideChevronDown color={colors.text_secondary} size={18} />
+          </Animated.View>
+        </View>
+
+        {/* APPS SECTION */}
+        <View style={styles.appsContainer}>
+          <Text variant="h3" style={styles.appsTitle}>Trending Domains</Text>
+          <View style={{ gap: spacing.md }}>
+            {loadedDapps.map(dapp => (
+              <DappRow
+                key={dapp.id}
+                dapp={dapp}
+                onPress={() => openBrowser(dapp.url)}
+              />
+            ))}
           </View>
         </View>
-
-        {/* Bouncing Indicator - Now positioned under the centered search bar */}
-        <Animated.View
-          style={[
-            styles.indicatorContainer,
-            {
-              backgroundColor: 'transparent',
-              marginTop: spacing.xl,
-              opacity: scrollY.interpolate({
-                inputRange: [0, 50],
-                outputRange: [1, 0],
-                extrapolate: 'clamp',
-              }),
-              transform: [{ translateY: bobAnim }],
-            },
-          ]}
-        >
-          <Text style={styles.indicatorText}>Scroll up to browse trending domains</Text>
-          <WideChevronDown color={colors.text_secondary} size={18} />
-        </Animated.View>
-      </View>
-
-      {/* ── CURTAIN (behind hero) ── */}
-      <View style={[styles.curtain, { height: HERO_BOTTOM }]} pointerEvents="none" />
-
-      {/* ── SCROLLABLE CONTENT ── */}
-      <Animated.ScrollView
-        ref={scrollRef}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        // Snap only to the Start (Logo) or the Docked point (Apps)
-        snapToOffsets={[0, SNAP_TARGET]}
-        snapToEnd={false}
-        decelerationRate="fast"
-        contentContainerStyle={{ paddingBottom: SCREEN_HEIGHT }}
-        style={{ flex: 1, zIndex: 1 }}
-      >
-        {/* Spacer 1: Keeps logo visible */}
-        <View style={{ height: HERO_BOTTOM + STICKY_GAP }} />
-
-        {/* Spacer to maintain scroll math now that indicator is absolute */}
-        <View style={{ height: INDICATOR_HEIGHT }} />
-
-        {/* Spacer 2: Hidden Zone */}
-        <View style={{ height: APPS_SPACER_HEIGHT }} />
-
-        {/* Apps Section: Free-scrollable after the snap */}
-        <View style={styles.appsContainer}>
-          <Animated.View
-            style={{
-              transform: [{
-                translateY: scrollY.interpolate({
-                  inputRange: [SNAP_TARGET, SNAP_TARGET + 1],
-                  outputRange: [0, 1],
-                  extrapolateLeft: 'clamp',
-                }),
-              }],
-              backgroundColor: colors.bg_darkest,
-              zIndex: 100,
-              elevation: 4,
-              paddingTop: spacing.md + 200,
-              marginTop: -(spacing.md + 200),
-            }}
-          >
-            <View style={{ height: STICKY_GAP }} />
-            <Text variant="h3" style={styles.appsTitle}>Trending Domains</Text>
-          </Animated.View>
-          {loadedDapps.map(dapp => (
-            <DappRow
-              key={dapp.id}
-              dapp={dapp}
-              onPress={() => openBrowser(dapp.url)}
-            />
-          ))}
-          {/* Extra min-height ensures you can scroll down the list before hitting the bottom */}
-          <View style={{ height: SCREEN_HEIGHT * 0.6 }} />
-        </View>
-      </Animated.ScrollView>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  fixedHeroContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+  heroContainer: {
+    paddingTop: 80,
+    paddingBottom: 60,
     alignItems: 'center',
-    zIndex: 200,
+    width: '100%',
   },
   searchBarWrapper: {
     width: '100%',
-    maxWidth: 800, // Constrain search width on desktop
+    maxWidth: 800,
     paddingHorizontal: spacing.lg,
-    marginTop: spacing.lg,
+    marginTop: spacing.xl,
+    marginBottom: spacing.xl,
   },
   searchBarInner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    height: 56, // Match constant
+    height: 56,
   },
   inputContainer: {
     flex: 1,
@@ -288,7 +233,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     color: colors.text_primary,
-    fontSize: 18, // Larger font for desktop search
+    fontSize: 18,
     paddingVertical: 0,
     height: '100%',
   },
@@ -301,19 +246,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 24,
   },
-  curtain: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: colors.bg_darkest,
-    zIndex: 100,
-  },
   indicatorContainer: {
     alignItems: 'center',
-    paddingTop: 0,
-    backgroundColor: colors.bg_darkest,
-    height: 28,
+    marginTop: spacing.md,
   },
   indicatorText: {
     fontWeight: '600',
@@ -321,26 +256,28 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   appsContainer: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
-    backgroundColor: colors.bg_darkest,
-    minHeight: SCREEN_HEIGHT,
+    paddingHorizontal: spacing.xl,
+    maxWidth: 1000,
+    width: '100%',
+    alignSelf: 'center',
   },
   appsTitle: {
-    marginBottom: spacing.md,
+    marginBottom: spacing.lg,
     color: colors.text_primary,
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
+    textAlign: 'center',
   },
   dappRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
     borderRadius: borderRadius.lg,
     backgroundColor: colors.bg_darker,
-    marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 });
 
