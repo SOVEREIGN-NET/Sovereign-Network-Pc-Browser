@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { Text, Logo, Column, Row, Divider } from '../components';
-import { colors, spacing, typography, borderRadius } from '../theme';
+import { Text, Logo, Column, Row, Divider } from '../../components';
+import { colors, spacing, typography, borderRadius } from '../../theme';
 
 export interface SidebarItem {
   id: string;
