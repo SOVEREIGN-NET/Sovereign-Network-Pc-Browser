@@ -1,0 +1,546 @@
+/**
+ * BackupIdentityScreen
+ * Screen for backing up identity (seed phrase + encrypted backup file)
+ */
+
+import React, { useState, useCallback } from 'react';
+import { View, Pressable, Share, Alert, Platform } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  Card,
+  Text,
+  Button,
+  Switch,
+  FormField,
+  LoadingView,
+  ScreenHeader,
+  ScreenLayout,
+  ActionButtons,
+  InfoCard,
+  OptionCardGroup,
+  WarningIcon,
+  EyeOpenIcon,
+  EyeClosedIcon,
+} from '../components';
+import { useAuth } from '../hooks';
+import { useTranslation } from '../i18n';
+import { colors, spacing, borderRadius, typography } from '../theme';
+import type { IdentityStackParamList } from '../types/navigation';
+import { maskIdentifier } from '../utils/maskIdentifier';
+import { nativeIdentityProvisioning } from '../services/NativeIdentityProvisioning';
+
+type BackupIdentityScreenProps = NativeStackScreenProps<
+  IdentityStackParamList,
+  'BackupIdentity'
+>;
+
+const BackupIdentityScreen = ({ navigation }: BackupIdentityScreenProps) => {
+  const { t } = useTranslation();
+  const { currentIdentity, isLoading, getMasterSeedPhrase } = useAuth();
+
+  // State
+  const [backupMethod, setBackupMethod] = useState<'seed' | 'file'>('seed');
+  const [showSeed, setShowSeed] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [understood, setUnderstood] = useState(false);
+  const [backupCreated, setBackupCreated] = useState(false);
+  const [backupPassword, setBackupPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [backupError, setBackupError] = useState<string | null>(null);
+  const [backupFileUri, setBackupFileUri] = useState<string | null>(null);
+  const [backupFilePath, setBackupFilePath] = useState<string | null>(null);
+
+  const [seedPhrase, setSeedPhrase] = useState<string>('');
+
+  const loadSeedPhraseOnDemand = useCallback(async () => {
+    if (seedPhrase) return;
+    if (currentIdentity?.masterSeedPhrase) {
+      setSeedPhrase(currentIdentity.masterSeedPhrase);
+      return;
+    }
+    try {
+      const stored = await getMasterSeedPhrase();
+      if (stored) {
+        setSeedPhrase(stored);
+      } else {
+        Alert.alert(
+          'Seed Phrase Unavailable',
+          'No seed phrase was found on this device. If you have not backed it up yet, recover using your original 24 words.'
+        );
+      }
+    } catch (err: any) {
+      Alert.alert('Seed Vault Error', err?.message || 'Failed to load seed phrase from secure storage.');
+    }
+  }, [currentIdentity?.masterSeedPhrase, getMasterSeedPhrase, seedPhrase]);
+
+  const handleCopySeed = useCallback(async () => {
+    try {
+      await Share.share({
+        message: seedPhrase,
+        title: 'Backup Seed Phrase',
+      });
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy seed phrase:', error);
+    }
+  }, [seedPhrase]);
+
+  const handleCreateBackupFile = useCallback(async () => {
+    // Validate inputs
+    if (!currentIdentity?.did) {
+      setBackupError('No identity to backup');
+      return;
+    }
+
+    if (!backupPassword.trim()) {
+      setBackupError(t.auth.backup.file.passwordRequired || 'Please enter a backup password');
+      return;
+    }
+
+    if (backupPassword.length < 6) {
+      setBackupError(t.auth.backup.file.passwordMinLength || 'Password must be at least 6 characters');
+      return;
+    }
+
+    if (backupPassword !== confirmPassword) {
+      setBackupError(t.auth.backup.file.passwordMismatch || 'Passwords do not match');
+      return;
+    }
+
+    setBackupError(null);
+    setCreating(true);
+
+    try {
+      const identityLookup = currentIdentity.identityId || currentIdentity.did;
+      const did = currentIdentity.did.trim();
+      const normalizedDid = did.startsWith('did:zhtp:') ? did.substring('did:zhtp:'.length) : did;
+
+      const keystoreBase64 =
+        await nativeIdentityProvisioning.exportKeystoreBase64(identityLookup);
+      const backupPayload = {
+        version: 1,
+        type: 'zhtp_identity_backup',
+        created_at: new Date().toISOString(),
+        did,
+        identity_id: currentIdentity.identityId || normalizedDid,
+        keystore_base64: keystoreBase64,
+      };
+      const serialized = JSON.stringify(backupPayload, null, 2);
+
+      const fileName = `sov-identity-backup-${normalizedDid.slice(0, 12)}-${Date.now()}.zkdid.json`;
+      const fileResult = await nativeIdentityProvisioning.createBackupFile(
+        fileName,
+        serialized,
+      );
+
+      setBackupFileUri(fileResult.uri || `file://${fileResult.path}`);
+      setBackupFilePath(fileResult.path);
+      console.log('✅ Backup file created for identity:', maskIdentifier(did));
+
+      setBackupCreated(true);
+      Alert.alert(
+        t.auth.backup.file.successTitle || 'Success',
+        t.auth.backup.file.successMessage || 'Backup file created and ready to download'
+      );
+    } catch (error: any) {
+      setBackupError(error.message || 'Failed to create backup');
+      Alert.alert('Error', error.message || 'Failed to create backup file');
+    } finally {
+      setCreating(false);
+    }
+  }, [backupPassword, confirmPassword, currentIdentity, t]);
+
+  const handleDownloadBackup = useCallback(async () => {
+    try {
+      if (!backupFileUri) {
+        Alert.alert('Backup Not Ready', 'Create the backup file first.');
+        return;
+      }
+
+      if (Platform.OS === 'ios' && backupFilePath) {
+        const result = await nativeIdentityProvisioning.exportBackupFile(
+          backupFilePath,
+        );
+        if (!result?.saved && !result?.cancelled) {
+          Alert.alert('Export Failed', 'Could not save backup file.');
+        }
+        return;
+      }
+
+      await Share.share({
+        url: backupFileUri,
+        title: 'Download Backup',
+      });
+    } catch (error) {
+      console.error('Failed to share backup file:', error);
+      Alert.alert('Share Failed', 'Could not share backup file. Please try again.');
+    }
+  }, [backupFilePath, backupFileUri]);
+
+  if (isLoading) {
+    return <LoadingView message={t.app.loading} />;
+  }
+
+  return (
+    <ScreenLayout>
+      {/* Header */}
+      <ScreenHeader
+        title={t.auth.backup.title}
+        subtitle={t.auth.backup.description}
+      />
+
+        {/* Security Warning */}
+        <View style={{ paddingHorizontal: spacing.lg, marginBottom: spacing.lg }}>
+          <Card
+            style={{
+              backgroundColor: `${colors.error}15`,
+              borderColor: colors.error,
+              borderWidth: 1,
+            }}
+          >
+            <View style={{ padding: spacing.xxs }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: spacing.sm,
+                  marginBottom: spacing.sm,
+                }}
+              >
+                <WarningIcon size={20} color={colors.error} />
+                <Text
+                  variant="body"
+                  weight="semibold"
+                  color={colors.error}
+                >
+                  {t.auth.backup.securityTitle}
+                </Text>
+              </View>
+              <Text variant="caption" color={colors.text_secondary}>
+                {t.auth.backup.securityWarning}
+              </Text>
+            </View>
+          </Card>
+        </View>
+
+        {/* Backup Method Selection */}
+        <View style={{ paddingHorizontal: spacing.lg, marginBottom: spacing.lg }}>
+          <Text
+            variant="body"
+            weight="semibold"
+            color={colors.text_primary}
+            style={{ marginBottom: spacing.md }}
+          >
+            {t.auth.backup.method}
+          </Text>
+
+          <OptionCardGroup
+            options={[
+              {
+                id: 'seed',
+                title: t.auth.backup.seed.label,
+                description: t.auth.backup.seed.description,
+              },
+              {
+                id: 'file',
+                title: t.auth.backup.file.label,
+                description: t.auth.backup.file.description,
+              },
+            ]}
+            selected={backupMethod}
+            onSelect={(method) => setBackupMethod(method as 'seed' | 'file')}
+            gap="md"
+          />
+        </View>
+
+        {/* Content based on selected method */}
+        {backupMethod === 'seed' && (
+          <View style={{ paddingHorizontal: spacing.lg }}>
+            {/* Seed Phrase Display */}
+            <Card
+              style={{
+                backgroundColor: colors.bg_darker,
+                borderColor: colors.border,
+                borderWidth: 1,
+                marginBottom: spacing.lg,
+              }}
+            >
+              <View style={{ padding: spacing.md }}>
+                <Text
+                  variant="body"
+                  weight="semibold"
+                  color={colors.text_primary}
+                  style={{ marginBottom: spacing.md }}
+                >
+                  {t.auth.backup.seed.title}
+                </Text>
+
+                {showSeed ? (
+                  <>
+                    <Text
+                      variant="body"
+                      color={colors.primary}
+                      style={{
+                        fontFamily: 'monospace',
+                        lineHeight: 24,
+                        padding: spacing.md,
+                        backgroundColor: colors.bg_dark,
+                        borderRadius: borderRadius.md,
+                        marginBottom: spacing.md,
+                      }}
+                    >
+                      {seedPhrase}
+                    </Text>
+
+                    <Button
+                      variant="secondary"
+                      onPress={handleCopySeed}
+                      style={{ marginBottom: spacing.md }}
+                    >
+                      <Text color={colors.text_primary}>
+                        {copied ? '✓ Copied' : 'Copy to Clipboard'}
+                      </Text>
+                    </Button>
+                  </>
+                ) : (
+                  <Pressable
+                    onPress={() => {
+                      setShowSeed(true);
+                      loadSeedPhraseOnDemand().catch(() => {});
+                    }}
+                    style={{
+                      backgroundColor: colors.bg_dark,
+                      padding: spacing.lg,
+                      borderRadius: borderRadius.md,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: 120,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: spacing.sm,
+                      }}
+                    >
+                      <EyeOpenIcon size={20} color={colors.text_secondary} />
+                      <Text
+                        variant="body"
+                        color={colors.text_secondary}
+                        style={{ textAlign: 'center' }}
+                      >
+                        Tap to reveal
+                      </Text>
+                    </View>
+                  </Pressable>
+                )}
+              </View>
+            </Card>
+
+            {/* Understood Checkbox */}
+            <Card
+              style={{
+                backgroundColor: colors.bg_dark,
+                borderColor: colors.border,
+                borderWidth: 1,
+                marginBottom: spacing.lg,
+              }}
+            >
+              <Pressable
+                onPress={() => setUnderstood(!understood)}
+                style={{ padding: spacing.md }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Switch
+                    value={understood}
+                    onValueChange={setUnderstood}
+                    style={{ marginRight: spacing.md }}
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text variant="caption" color={colors.text_secondary}>
+                      I understand that I must keep this seed phrase private and
+                      secure
+                    </Text>
+                  </View>
+                </View>
+              </Pressable>
+            </Card>
+
+            <ActionButtons
+              buttons={[
+                {
+                  label: "✓ I've saved my seed phrase",
+                  onPress: () => navigation.goBack(),
+                  variant: 'primary',
+                  disabled: !understood,
+                },
+              ]}
+              paddingHorizontal={0}
+            />
+          </View>
+        )}
+
+        {backupMethod === 'file' && (
+          <View style={{ paddingHorizontal: spacing.lg }}>
+            {/* File Backup Instructions */}
+            <Card
+              style={{
+                backgroundColor: colors.bg_darker,
+                borderColor: colors.border,
+                borderWidth: 1,
+                marginBottom: spacing.lg,
+              }}
+            >
+              <View style={{ padding: spacing.md }}>
+                <Text
+                  variant="body"
+                  weight="semibold"
+                  color={colors.text_primary}
+                  style={{ marginBottom: spacing.md }}
+                >
+                  {t.auth.backup.file.title}
+                </Text>
+
+                <Text
+                  variant="caption"
+                  color={colors.text_secondary}
+                  style={{ marginBottom: spacing.md }}
+                >
+                  Create an encrypted backup file with a secure password.
+                </Text>
+
+                {backupCreated ? (
+                  <>
+                    <InfoCard
+                      title="Backup file created successfully"
+                      description="Stored securely on your device"
+                      type="success"
+                      icon="✓"
+                    />
+
+                    <ActionButtons
+                      buttons={[
+                        {
+                          label: '⬇️ Download Backup',
+                          onPress: () => {
+                            handleDownloadBackup().catch(() => {});
+                          },
+                          variant: 'secondary',
+                        },
+                        {
+                          label: 'Done',
+                          onPress: () => navigation.goBack(),
+                          variant: 'primary',
+                        },
+                      ]}
+                      gap="md"
+                      paddingVertical={spacing.md}
+                    />
+                  </>
+                ) : (
+                  <>
+                    {/* Password Input Fields */}
+                    <FormField
+                      label="Backup Password"
+                      placeholder="Enter a strong password"
+                      value={backupPassword}
+                      onChangeText={setBackupPassword}
+                      secureTextEntry={!showPassword}
+                      editable={!backupCreated}
+                      helperText="Minimum 8 characters"
+                      containerStyle={{ marginBottom: spacing.md }}
+                      rightIcon={
+                        <Pressable
+                          onPress={() => setShowPassword(prev => !prev)}
+                          hitSlop={8}
+                          style={{ padding: 2 }}
+                        >
+                          {showPassword ? (
+                            <EyeOpenIcon size={18} color={colors.primary} />
+                          ) : (
+                            <EyeClosedIcon size={18} color={colors.primary} />
+                          )}
+                        </Pressable>
+                      }
+                    />
+
+                    <View style={{ marginBottom: spacing.md }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: '600',
+                          color: colors.text_primary,
+                          marginBottom: spacing.sm,
+                        }}
+                      >
+                        Confirm Password
+                      </Text>
+                      <FormField
+                        label=""
+                        placeholder="Confirm your password"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        secureTextEntry={!showPassword}
+                        editable={!backupCreated}
+                        containerStyle={{ marginBottom: 0 }}
+                        rightIcon={
+                          <Pressable
+                            onPress={() => setShowPassword(prev => !prev)}
+                            hitSlop={8}
+                            style={{ padding: 2 }}
+                          >
+                            {showPassword ? (
+                              <EyeOpenIcon size={18} color={colors.primary} />
+                            ) : (
+                              <EyeClosedIcon size={18} color={colors.primary} />
+                            )}
+                          </Pressable>
+                        }
+                      />
+                    </View>
+
+                    {backupError && (
+                      <View
+                        style={{
+                          backgroundColor: colors.error + '20',
+                          padding: spacing.md,
+                          borderRadius: borderRadius.base,
+                          marginBottom: spacing.md,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: typography.size.xs,
+                            color: colors.error,
+                            fontWeight: '600',
+                          }}
+                        >
+                          ❌ {backupError}
+                        </Text>
+                      </View>
+                    )}
+
+                    <Button
+                      variant="primary"
+                      onPress={handleCreateBackupFile}
+                      disabled={creating}
+                    >
+                      <Text color={colors.white} weight="semibold">
+                        {creating ? 'Creating Backup...' : 'Create Backup File'}
+                      </Text>
+                    </Button>
+                  </>
+                )}
+              </View>
+            </Card>
+          </View>
+      )}
+    </ScreenLayout>
+  );
+};
+
+export default BackupIdentityScreen;
