@@ -6,6 +6,7 @@
 mod quic;
 mod identity;
 mod quic_engine;
+mod identity_engine;
 mod zhtp_auth;
 mod zhtp_auth_request;
 mod zhtp_codec;
@@ -27,6 +28,7 @@ fn main() {
       quic::cancel_all,
       identity::get_identity,
       identity::set_identity,
+      identity::generate_local_identity,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
