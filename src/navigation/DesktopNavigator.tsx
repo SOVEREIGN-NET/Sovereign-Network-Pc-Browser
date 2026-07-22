@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Sidebar, SidebarItem } from './Sidebar';
 import { colors } from '../theme';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
+import { useSidebar } from '../context/SidebarContext';
 
 // Screens
 import DashboardScreen from '../screens/DashboardScreen';
@@ -40,6 +41,15 @@ const StoreIcon = ({ color }: { color: string }) => (
   </Svg>
 );
 
+const ExplorerIcon = ({ color }: { color: string }) => (
+  <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
+    <Circle cx="12" cy="12" r="9" stroke={color} strokeWidth={2} />
+    <Path d="M3 12h18M12 3v18" stroke={color} strokeWidth={2} />
+    <Path d="M12 3a9 9 0 0 1 9 9" stroke={color} strokeWidth={2} />
+    <Path d="M12 21a9 9 0 0 1-9-9" stroke={color} strokeWidth={2} />
+  </Svg>
+);
+
 const StorageIcon = ({ color }: { color: string }) => (
   <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
     <Path d="M3 15h18v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4z" stroke={color} strokeWidth={2} />
@@ -56,12 +66,14 @@ const DevIcon = ({ color }: { color: string }) => (
 
 export const DesktopNavigator: React.FC = () => {
   const [activeTab, setActiveTab] = useState('search');
+  const { isCollapsed } = useSidebar();
 
   const mainItems: SidebarItem[] = [
     { id: 'search', label: 'Search', icon: <SearchIcon color={activeTab === 'search' ? colors.primary : colors.text_secondary} /> },
     { id: 'sid', label: 'Wallet (SID)', icon: <WalletIcon color={activeTab === 'sid' ? colors.primary : colors.text_secondary} /> },
     { id: 'dao', label: 'Governance', icon: <DaoIcon color={activeTab === 'dao' ? colors.primary : colors.text_secondary} /> },
     { id: 'store', label: 'dApp Store', icon: <StoreIcon color={activeTab === 'store' ? colors.primary : colors.text_secondary} /> },
+    { id: 'explorer', label: 'Block Explorer', icon: <ExplorerIcon color={activeTab === 'explorer' ? colors.primary : colors.text_secondary} /> },
   ];
 
   const secondaryItems: SidebarItem[] = [
@@ -75,19 +87,21 @@ export const DesktopNavigator: React.FC = () => {
       case 'sid': return <SIDScreen navigation={mockNavigation} />;
       case 'dao': return <DAOScreen navigation={mockNavigation} />;
       case 'store': return <DappsScreen navigation={mockNavigation} />;
+      case 'explorer': return <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}><HeaderBar /><View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text variant="h2">Block Explorer</Text><Text style={{ color: colors.text_secondary, marginTop: 10 }}>Coming soon to Desktop...</Text></View></View>;
       case 'storage': return <MyStorageScreen navigation={mockNavigation} />;
       case 'dev': return <DeveloperPortalScreen navigation={mockNavigation} />;
       default: return <DashboardScreen navigation={mockNavigation} />;
     }
   };
 
-  // Mock navigation for screens that expect a navigation prop
   const mockNavigation = {
     navigate: (route: string, params?: any) => {
       console.log('Navigating to:', route, params);
-      // For now, just handle simple tab switching from within screens
+      // Handle tab switching from within screens
       if (route === 'MyStorage') setActiveTab('storage');
       if (route === 'DeveloperPortal') setActiveTab('dev');
+      if (route === 'Dashboard') setActiveTab('search');
+      if (route === 'SID') setActiveTab('sid');
     },
     goBack: () => console.log('Go back'),
     canGoBack: () => false,

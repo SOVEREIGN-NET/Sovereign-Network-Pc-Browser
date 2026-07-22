@@ -1,17 +1,23 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { DesktopNavigator } from "./navigation/DesktopNavigator";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
+import { SidebarProvider } from "./context/SidebarContext";
 import { colors } from "./theme";
 
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <View style={styles.container}>
-          <DesktopNavigator />
-        </View>
+        <SidebarProvider>
+          <NavigationContainer>
+            <View style={styles.container}>
+              <DesktopNavigator />
+            </View>
+          </NavigationContainer>
+        </SidebarProvider>
       </AuthProvider>
     </ThemeProvider>
   );

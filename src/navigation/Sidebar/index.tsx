@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Text, Logo, Column, Row, Divider } from '../../components';
 import { colors, spacing, typography, borderRadius } from '../../theme';
+import { useSidebar } from '../../context/SidebarContext';
 
 export interface SidebarItem {
   id: string;
@@ -23,11 +24,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelect,
   secondaryItems,
 }) => {
+  const { isCollapsed } = useSidebar();
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Logo size={40} />
-        <Text variant="h3" style={styles.brandTitle}>Sovereign</Text>
+    <View style={[styles.container, isCollapsed && styles.containerCollapsed]}>
+      <View style={[styles.header, isCollapsed && styles.headerCollapsed]}>
+        <Logo size={isCollapsed ? 32 : 40} />
+        {!isCollapsed && <Text variant="h3" style={styles.brandTitle}>Sovereign</Text>}
       </View>
 
       <ScrollView style={styles.content}>
@@ -39,25 +42,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onPress={() => onSelect(item.id)}
               style={[
                 styles.item,
+                isCollapsed && styles.itemCollapsed,
                 activeId === item.id && styles.itemActive
               ]}
             >
               <View style={styles.iconContainer}>
                 {item.icon}
               </View>
-              <Text
-                style={[
-                  styles.label,
-                  activeId === item.id && styles.labelActive
-                ]}
-              >
-                {item.label}
-              </Text>
+              {!isCollapsed && (
+                <Text
+                  style={[
+                    styles.label,
+                    activeId === item.id && styles.labelActive
+                  ]}
+                >
+                  {item.label}
+                </Text>
+              )}
             </TouchableOpacity>
           ))}
         </Column>
 
-        <Divider style={styles.divider} />
+        <Divider style={[styles.divider, isCollapsed && styles.dividerCollapsed]} />
 
         <Column gap="xs" style={styles.section}>
           {secondaryItems.map((item) => (
@@ -67,31 +73,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onPress={() => onSelect(item.id)}
               style={[
                 styles.item,
+                isCollapsed && styles.itemCollapsed,
                 activeId === item.id && styles.itemActive
               ]}
             >
               <View style={styles.iconContainer}>
                 {item.icon}
               </View>
-              <Text
-                style={[
-                  styles.label,
-                  activeId === item.id && styles.labelActive
-                ]}
-              >
-                {item.label}
-              </Text>
+              {!isCollapsed && (
+                <Text
+                  style={[
+                    styles.label,
+                    activeId === item.id && styles.labelActive
+                  ]}
+                >
+                  {item.label}
+                </Text>
+              )}
             </TouchableOpacity>
           ))}
         </Column>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <View style={styles.statusBox}>
-          <View style={styles.statusDot} />
-          <Text style={styles.statusText}>Network Connected</Text>
+      {!isCollapsed && (
+        <View style={styles.footer}>
+          <View style={styles.statusBox}>
+            <View style={styles.statusDot} />
+            <Text style={styles.statusText}>Network Connected</Text>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };
@@ -103,16 +114,26 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg_dark,
     borderRightWidth: 1,
     borderRightColor: colors.border,
+    transition: 'width 0.2s ease-in-out', // Smooth transition for web
+  } as any,
+  containerCollapsed: {
+    width: 80,
   },
   header: {
     padding: spacing.xl,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+    height: 80,
+  },
+  headerCollapsed: {
+    paddingHorizontal: 0,
+    justifyContent: 'center',
   },
   brandTitle: {
     fontWeight: 'bold',
     letterSpacing: 1,
+    color: colors.primary,
   },
   content: {
     flex: 1,
@@ -128,11 +149,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: borderRadius.md,
     gap: spacing.md,
+    marginBottom: 4,
+  },
+  itemCollapsed: {
+    paddingHorizontal: 0,
+    justifyContent: 'center',
+    marginHorizontal: spacing.md,
   },
   itemActive: {
-    backgroundColor: colors.bg_darker,
+    backgroundColor: colors.primary + '15',
     borderWidth: 1,
-    borderColor: colors.primary + '33',
+    borderColor: colors.primary + '44',
   },
   iconContainer: {
     width: 24,
@@ -142,17 +169,19 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.text_secondary,
   },
   labelActive: {
     color: colors.primary,
-    fontWeight: '600',
   },
   divider: {
     marginHorizontal: spacing.xl,
-    marginVertical: spacing.sm,
-    opacity: 0.5,
+    marginVertical: spacing.md,
+    opacity: 0.3,
+  },
+  dividerCollapsed: {
+    marginHorizontal: spacing.lg,
   },
   footer: {
     padding: spacing.lg,
@@ -178,3 +207,5 @@ const styles = StyleSheet.create({
     color: colors.text_secondary,
   },
 });
+
+
