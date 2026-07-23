@@ -203,6 +203,7 @@ const StatRow: React.FC<{ label: string; value: string }> = ({ label, value }) =
 const makeStyles = () => StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
     backgroundColor: colors.bg_darkest,
   },
   header: {

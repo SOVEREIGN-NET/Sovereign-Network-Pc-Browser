@@ -7,6 +7,7 @@ import WalletDetailScreen from '../screens/explorer/WalletDetailScreen';
 import IdentityDetailScreen from '../screens/explorer/IdentityDetailScreen';
 import SearchScreen from '../screens/explorer/SearchScreen';
 import NetworkTopologyScreen from '../screens/explorer/NetworkTopologyScreen';
+import { colors } from '../theme';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ export const ExplorerNavigator = () => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
+        contentStyle: { backgroundColor: '#1a1a1a', flex: 1, height: '100%' },
       }}
     >
       <Stack.Screen name="ExplorerDashboard" component={ExplorerDashboardScreen} />

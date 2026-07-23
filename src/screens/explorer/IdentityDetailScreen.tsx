@@ -124,7 +124,7 @@ const DetailRow: React.FC<{ label: string; value?: string; children?: React.Reac
 // Module-scope StyleSheet.create snapshots theme colours at boot.
 // Proxy wrapper below rebuilds on theme swap. See BlockDetailScreen.
 const makeStyles = () => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg_darkest },
+  container: { flex: 1, height: '100%', backgroundColor: colors.bg_darkest },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.lg, paddingVertical: spacing.sm,

@@ -13,7 +13,7 @@ function App() {
       <AuthProvider>
         <SidebarProvider>
           <NavigationContainer>
-            <View style={styles.container}>
+            <View style={[styles.container, { height: '100vh', width: '100vw', overflow: 'hidden' }]}>
               <DesktopNavigator />
             </View>
           </NavigationContainer>

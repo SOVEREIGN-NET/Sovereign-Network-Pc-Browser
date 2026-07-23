@@ -98,7 +98,7 @@ const DetailRow: React.FC<{ label: string; value?: string; children?: React.Reac
 // sheet at render time and wrap it in a Proxy below so every
 // `styles.X` access rebuilds on theme change.
 const makeStyles = () => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg_darkest },
+  container: { flex: 1, height: '100%', backgroundColor: colors.bg_darkest },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.lg, paddingVertical: spacing.sm,

@@ -369,6 +369,7 @@ const NetworkTopologyScreen: React.FC<{ navigation: { goBack: () => void } }> = 
 const makeStyles = () => ({
   container: {
     flex: 1 as const,
+    height: '100%' as const,
     backgroundColor: colors.bg_darkest,
   },
   header: {

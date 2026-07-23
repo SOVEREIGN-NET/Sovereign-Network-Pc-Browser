@@ -419,7 +419,7 @@ const TransactionDetailScreen: React.FC<any> = ({ navigation, route }) => {
 };
 
 const makeStyles = () => StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.bg_darkest },
+  container: { flex: 1, height: '100%', backgroundColor: colors.bg_darkest },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: spacing.lg, paddingVertical: spacing.sm,

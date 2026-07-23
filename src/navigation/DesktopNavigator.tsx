@@ -127,6 +127,7 @@ export const DesktopNavigator: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
     flexDirection: 'row',
     backgroundColor: colors.bg_darkest,
   },
