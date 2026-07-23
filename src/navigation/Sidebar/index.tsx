@@ -46,6 +46,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 activeId === item.id && styles.itemActive
               ]}
             >
+              {activeId === item.id && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: isCollapsed ? -10 : -14,
+                    width: 3,
+                    height: 20,
+                    backgroundColor: colors.primary,
+                    borderTopRightRadius: 4,
+                    borderBottomRightRadius: 4,
+                    boxShadow: `0 0 10px ${colors.primary}`
+                  } as any}
+                />
+              )}
               <View style={styles.iconContainer}>
                 {item.icon}
               </View>
@@ -73,6 +87,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 activeId === item.id && styles.itemActive
               ]}
             >
+              {activeId === item.id && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: isCollapsed ? -10 : -14,
+                    width: 3,
+                    height: 20,
+                    backgroundColor: colors.primary,
+                    borderTopRightRadius: 4,
+                    borderBottomRightRadius: 4,
+                    boxShadow: `0 0 10px ${colors.primary}`
+                  } as any}
+                />
+              )}
               <View style={styles.iconContainer}>
                 {item.icon}
               </View>
@@ -137,17 +165,22 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
     gap: spacing.md,
     marginBottom: 4,
+    position: 'relative',
   },
   itemCollapsed: {
     paddingHorizontal: 0,
     justifyContent: 'center',
-    marginHorizontal: spacing.md,
+    width: 48,
+    height: 48,
+    alignSelf: 'center',
+    borderRadius: borderRadius.lg,
   },
   itemActive: {
-    backgroundColor: colors.primary + '15',
+    backgroundColor: colors.primary + '18',
     borderWidth: 1,
-    borderColor: colors.primary + '44',
-  },
+    borderColor: colors.primary + '55',
+    boxShadow: `0 0 12px ${colors.primary}22`,
+  } as any,
   iconContainer: {
     width: 24,
     height: 24,
