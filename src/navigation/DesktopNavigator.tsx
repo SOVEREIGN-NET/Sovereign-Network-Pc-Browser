@@ -14,6 +14,7 @@ import DappsScreen from '../screens/DappsScreen';
 import MyStorageScreen from '../screens/MyStorageScreen';
 import MyDomainsScreen from '../screens/MyDomainsScreen';
 import DeveloperPortalScreen from '../screens/DeveloperPortalScreen';
+import ExplorerNavigator from './ExplorerNavigator';
 
 const SearchIcon = ({ color }: { color: string }) => (
   <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
@@ -88,7 +89,7 @@ export const DesktopNavigator: React.FC = () => {
       case 'sid': return <SIDScreen navigation={mockNavigation} />;
       case 'dao': return <DAOScreen navigation={mockNavigation} />;
       case 'store': return <DappsScreen navigation={mockNavigation} />;
-      case 'explorer': return <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}><HeaderBar /><View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text variant="h2">Block Explorer</Text><Text style={{ color: colors.text_secondary, marginTop: 10 }}>Coming soon to Desktop...</Text></View></View>;
+      case 'explorer': return <ExplorerNavigator />;
       case 'storage': return <MyStorageScreen navigation={mockNavigation} />;
       case 'dev': return <DeveloperPortalScreen navigation={mockNavigation} />;
       default: return <DashboardScreen navigation={mockNavigation} />;

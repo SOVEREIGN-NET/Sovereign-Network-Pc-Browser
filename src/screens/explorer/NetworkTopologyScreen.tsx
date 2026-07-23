@@ -263,16 +263,8 @@ const NetworkTopologyScreen: React.FC<{ navigation: { goBack: () => void } }> = 
     setExpanded(prev => (prev === id ? null : id));
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text variant="body" style={{ color: colors.primary }}>
-            ← Back
-          </Text>
-        </Pressable>
-        <Text variant="h3" style={{ fontWeight: '700' }}>Network</Text>
-        <View style={{ width: 48 }} />
-      </View>
+    <View style={styles.container}>
+      <HeaderBar onBackPress={() => navigation.goBack()} />
 
       <ScrollView
         contentContainerStyle={styles.content}
