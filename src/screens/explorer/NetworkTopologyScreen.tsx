@@ -14,7 +14,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, ScrollView, Pressable, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, Card, Row, Column, Badge, RefreshRing } from '../../components';
+import { Text, Card, Row, Column, Badge, RefreshRing, HeaderBar } from '../../components';
 import { TopologyMap } from '../../components/organisms/TopologyMap';
 import { ZDNS_HOST } from '../../config';
 import {

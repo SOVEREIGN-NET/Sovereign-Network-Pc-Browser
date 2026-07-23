@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, ActivityIndicator, Clipboard, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, Card, Row, Column } from '../../components';
+import { Text, Card, Row, Column, HeaderBar } from '../../components';
 import { colors, spacing, borderRadius, typography , createThemeReactiveStyles } from '../../theme';
 import { useAsyncData } from '../../hooks';
 import { fetchBlock, BlockDetailResponse } from '../../services/ExplorerService';
