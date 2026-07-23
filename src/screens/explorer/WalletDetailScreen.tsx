@@ -93,7 +93,7 @@ const WalletDetailScreen: React.FC<any> = ({ navigation, route }) => {
           </Card>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

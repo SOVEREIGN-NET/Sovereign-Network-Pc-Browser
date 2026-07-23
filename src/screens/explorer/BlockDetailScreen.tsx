@@ -80,7 +80,7 @@ const BlockDetailScreen: React.FC<any> = ({ navigation, route }) => {
           </Card>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

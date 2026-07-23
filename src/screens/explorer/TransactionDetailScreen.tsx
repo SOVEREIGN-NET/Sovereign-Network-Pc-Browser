@@ -411,7 +411,7 @@ const TransactionDetailScreen: React.FC<any> = ({ navigation, route }) => {
           );
         })()}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

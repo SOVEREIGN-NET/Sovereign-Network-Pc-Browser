@@ -183,7 +183,7 @@ const ExplorerDashboardScreen: React.FC<any> = ({ navigation }) => {
           ) : null}
         </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -141,7 +141,7 @@ const SearchScreen: React.FC<any> = ({ navigation, route }) => {
           </Text>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

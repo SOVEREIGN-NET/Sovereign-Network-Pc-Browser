@@ -108,7 +108,7 @@ const IdentityDetailScreen: React.FC<any> = ({ navigation, route }) => {
           </Card>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
