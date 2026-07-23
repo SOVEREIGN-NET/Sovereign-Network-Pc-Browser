@@ -10,14 +10,12 @@ import { useNavigation } from '@react-navigation/native';
 import { HeaderBar, Text } from '../components';
 import { colors, spacing, borderRadius } from '../theme/tokens';
 
-export const OperateNodesScreen: React.FC<any> = () => {
-  const navigation = useNavigation<any>();
+export const OperateNodesScreen: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <HeaderBar
         title="Operate Nodes"
         onBackPress={() => navigation.goBack()}
-        showHamburger={false}
       />
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.intro}>

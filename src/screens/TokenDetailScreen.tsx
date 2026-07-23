@@ -269,13 +269,14 @@ const TokenDetailScreen = ({ route, navigation }: any) => {
                     )}
 
                     <Button
-                      title={minting ? 'Minting...' : 'Mint Tokens'}
                       onPress={handleMint}
                       disabled={minting}
                       style={{
                         backgroundColor: minting ? colors.text_secondary : colors.primary,
                       }}
-                    />
+                    >
+                      {minting ? 'Minting...' : 'Mint Tokens'}
+                    </Button>
                   </View>
                 </Card>
               </View>

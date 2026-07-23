@@ -11,6 +11,7 @@ import { useRewardCounter } from '../../../hooks/useRewardCounter';
 import { useSidebar } from '../../../context/SidebarContext';
 
 export interface HeaderBarProps {
+  title?: string;
   onMenuPress?: () => void;
   onBackPress?: () => void;
   sovAddress?: string;
@@ -21,6 +22,7 @@ export interface HeaderBarProps {
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({
+  title,
   onMenuPress,
   onBackPress,
   sovAddress,
@@ -84,7 +86,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
               <Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
                 <Path
                   d="M19 12H5M5 12L12 19M5 12L12 5"
-                  stroke={colors.text_primary}
+                  stroke={colors.primary}
                   strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -106,13 +108,19 @@ const HeaderBar: React.FC<HeaderBarProps> = ({
           )}
         </View>
 
-        <Pressable
-          onPress={onBalancePress}
-          style={styles.centerSection}
-          pointerEvents="box-none"
-        >
-          <Text style={styles.sovLabel}>{sovLabel}</Text>
-        </Pressable>
+        {title ? (
+          <View style={styles.centerSection} pointerEvents="none">
+            <Text style={styles.titleText}>{title}</Text>
+          </View>
+        ) : (
+          <Pressable
+            onPress={onBalancePress}
+            style={styles.centerSection}
+            pointerEvents="box-none"
+          >
+            <Text style={styles.sovLabel}>{sovLabel}</Text>
+          </Pressable>
+        )}
 
         <View style={[styles.sideSlot, styles.rightSlot]}>
           <Row style={styles.rightSection}>
@@ -206,6 +214,12 @@ const styles = StyleSheet.create({
   },
   sovLabel: {
     fontSize: 16,
+    fontWeight: '700',
+    color: colors.primary,
+    letterSpacing: 0.5,
+  },
+  titleText: {
+    fontSize: 18,
     fontWeight: '700',
     color: colors.primary,
     letterSpacing: 0.5,

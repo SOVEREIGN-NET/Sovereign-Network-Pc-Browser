@@ -21,6 +21,7 @@ import {
   WarningIcon,
   EyeOpenIcon,
   EyeClosedIcon,
+  HeaderBar,
 } from '../components';
 import { useAuth } from '../hooks';
 import { useTranslation } from '../i18n';
@@ -185,14 +186,15 @@ const BackupIdentityScreen = ({ navigation }: BackupIdentityScreenProps) => {
   }
 
   return (
-    <ScreenLayout>
-      {/* Header */}
-      <ScreenHeader
-        title={t.auth.backup.title}
-        subtitle={t.auth.backup.description}
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Backup Identity"
+        onBackPress={() => navigation.goBack()}
       />
-
-        {/* Security Warning */}
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="lg" style={{ paddingBottom: spacing.xl }}>
+            {/* Security Warning */}
         <View style={{ paddingHorizontal: spacing.lg, marginBottom: spacing.lg }}>
           <Card
             style={{
@@ -538,9 +540,12 @@ const BackupIdentityScreen = ({ navigation }: BackupIdentityScreenProps) => {
               </View>
             </Card>
           </View>
-      )}
-    </ScreenLayout>
-  );
+        )}
+      </Column>
+    </ScrollView>
+  </ScreenLayout>
+</View>
+);
 };
 
 export default BackupIdentityScreen;

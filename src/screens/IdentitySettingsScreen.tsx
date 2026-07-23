@@ -14,6 +14,7 @@ import {
   EyeClosedIcon,
   LockIcon,
   KeyIcon,
+  HeaderBar,
 } from '../components';
 import { useAuth } from '../hooks';
 import { useTranslation } from '../i18n';
@@ -94,9 +95,15 @@ const IdentitySettingsScreen = ({ navigation }: any) => {
   };
 
   return (
-    <ScreenLayout>
-      <Column gap="xl">
-          {/* Error Message */}
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Identity Settings"
+        onBackPress={() => navigation.goBack()}
+      />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="xl" style={{ paddingBottom: spacing.xl }}>
+            {/* Error Message */}
           {error && <ErrorAlert message={error} icon="❌" />}
 
           {/* Passphrase Section */}
@@ -272,8 +279,10 @@ const IdentitySettingsScreen = ({ navigation }: any) => {
         {/* Footer spacing */}
         <View style={{ height: spacing.xl }} />
       </Column>
-    </ScreenLayout>
-  );
+    </ScrollView>
+  </ScreenLayout>
+</View>
+);
 };
 
 export default IdentitySettingsScreen;

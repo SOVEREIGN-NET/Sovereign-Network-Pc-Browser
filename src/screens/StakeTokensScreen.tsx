@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Alert } from 'react-native';
-import { Card, Text, Button, Column, DetailRow, ScreenLayout, FormField, TabSelector, ActionFooter } from '../components';
+import { View, Alert, ScrollView } from 'react-native';
+import { Card, Text, Button, Column, DetailRow, ScreenLayout, FormField, TabSelector, HeaderBar } from '../components';
 import { useTranslation } from '../i18n';
 import { colors, spacing, typography } from '../theme';
 
 const StakeTokensScreen = ({ navigation }: any) => {
   const { t } = useTranslation();
+  // ...
   const [stakeAmount, setStakeAmount] = useState('');
   const [unstakeAmount, setUnstakeAmount] = useState('');
   const [selectedDuration, setSelectedDuration] = useState('oneYear');
@@ -125,19 +126,23 @@ const StakeTokensScreen = ({ navigation }: any) => {
   const currentAPY = apyRates[selectedDuration] || 5.5;
 
   return (
-    <ScreenLayout>
-      <Column gap="lg">
-          <Text variant="h1">{t.stakeTokens.title.replace('{currency}', 'SOV')}</Text>
-
-          {/* Current Staking Status */}
-          <Card>
-            <Column gap="md">
-              <DetailRow label={t.stakeTokens.currentStake} value={`${currentStake} SOV`} />
-              <DetailRow label={t.stakeTokens.stakingRewards} value={`${stakingRewards} SOV`} />
-              <DetailRow label={t.stakeTokens.availableBalance} value={`${availableBalance} SOV`} />
-              <DetailRow label={t.stakeTokens.apyRate} value={`${currentAPY}%`} />
-            </Column>
-          </Card>
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Stake SOV"
+        onBackPress={() => navigation.goBack()}
+      />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="lg" style={{ paddingBottom: spacing.xl }}>
+            {/* Current Staking Status */}
+            <Card>
+              <Column gap="md">
+                <DetailRow label={t.stakeTokens.currentStake} value={`${currentStake} SOV`} />
+                <DetailRow label={t.stakeTokens.stakingRewards} value={`${stakingRewards} SOV`} />
+                <DetailRow label={t.stakeTokens.availableBalance} value={`${availableBalance} SOV`} />
+                <DetailRow label={t.stakeTokens.apyRate} value={`${currentAPY}%`} />
+              </Column>
+            </Card>
 
           {/* Tab Selector */}
           <TabSelector
@@ -304,20 +309,11 @@ const StakeTokensScreen = ({ navigation }: any) => {
               </Text>
             </Column>
           </Card>
-
-          <ActionFooter
-            actions={[
-              {
-                label: t.stakeTokens.cancelButton,
-                onPress: () => navigation.goBack(),
-                variant: 'secondary',
-                disabled: isStaking,
-              },
-            ]}
-          />
         </Column>
-      </ScreenLayout>
-    );
+      </ScrollView>
+    </ScreenLayout>
+    </View>
+  );
 };
 
 export default StakeTokensScreen;

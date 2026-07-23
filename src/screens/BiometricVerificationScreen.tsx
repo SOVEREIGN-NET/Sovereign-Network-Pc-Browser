@@ -16,7 +16,9 @@ import {
   InfoCard,
   InfoCardList,
   ActionButtons,
+  HeaderBar,
 } from '../components';
+import { ScrollView } from 'react-native';
 import { useAuth } from '../hooks';
 import { useTranslation } from '../i18n';
 import { colors, spacing } from '../theme';
@@ -127,12 +129,22 @@ const BiometricVerificationScreen = ({
   }
 
   return (
-    <ScreenLayout>
-      {/* Header */}
-      <ScreenHeader
-        title={t.settings.biometric.title}
-        subtitle={t.settings.biometric.description}
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Biometric Setup"
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
       />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="lg" style={{ paddingBottom: spacing.xl }}>
+            {/* Header Replacement */}
+            <View style={{ paddingHorizontal: spacing.lg, marginBottom: spacing.sm }}>
+              <Text variant="h2" color={colors.text_primary}>{t.settings.biometric.title}</Text>
+              <Text variant="caption" color={colors.text_secondary} style={{ marginTop: spacing.xs }}>
+                {t.settings.biometric.description}
+              </Text>
+            </View>
 
         {/* Biometric Status */}
         {biometricAvailable ? (
@@ -332,9 +344,12 @@ const BiometricVerificationScreen = ({
               icon="⚠️"
             />
           </View>
-      )}
-    </ScreenLayout>
-  );
+        )}
+      </Column>
+    </ScrollView>
+  </ScreenLayout>
+</View>
+);
 };
 
 export default BiometricVerificationScreen;

@@ -126,7 +126,7 @@ const DashboardScreen: React.FC<any> = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
       <View style={{ zIndex: 500 }}>
-        <HeaderBar />
+        <HeaderBar title="Search" />
         {activeNotice && (
           <Pressable
             onPress={() => dismiss(activeNotice.id)}

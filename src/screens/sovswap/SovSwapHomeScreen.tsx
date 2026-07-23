@@ -45,7 +45,7 @@ export const SovSwapHomeScreen: React.FC<SovSwapHomeScreenProps> = ({
         backgroundColor={colors.bg_darkest}
       />
 
-      <HeaderBar />
+      <HeaderBar title="SovSwap" />
 
       {/* Tab strip */}
       <View style={styles.tabContainer}>

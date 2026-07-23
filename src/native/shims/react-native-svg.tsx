@@ -43,8 +43,15 @@ export const Stop = ({ style, ...props }: any) => <stop style={flattenStyle(styl
 export const Polygon = ({ style, ...props }: any) => <polygon style={flattenStyle(style)} {...props} />;
 export const Ellipse = ({ style, ...props }: any) => <ellipse style={flattenStyle(style)} {...props} />;
 export const Line = ({ style, ...props }: any) => <line style={flattenStyle(style)} {...props} />;
+export const Polyline = ({ style, ...props }: any) => <polyline style={flattenStyle(style)} {...props} />;
 export const Text = ({ style, ...props }: any) => <text style={flattenStyle(style)} {...props} />;
 export const TSpan = ({ style, ...props }: any) => <tspan style={flattenStyle(style)} {...props} />;
+export const Pattern = ({ style, ...props }: any) => <pattern style={flattenStyle(style)} {...props} />;
+export const Mask = ({ style, ...props }: any) => <mask style={flattenStyle(style)} {...props} />;
+export const ClipPath = ({ style, ...props }: any) => <clipPath style={flattenStyle(style)} {...props} />;
+export const Use = ({ style, ...props }: any) => <use style={flattenStyle(style)} {...props} />;
+export const Symbol = ({ style, ...props }: any) => <symbol style={flattenStyle(style)} {...props} />;
+export const Image = ({ style, ...props }: any) => <image style={flattenStyle(style)} {...props} />;
 
 
 

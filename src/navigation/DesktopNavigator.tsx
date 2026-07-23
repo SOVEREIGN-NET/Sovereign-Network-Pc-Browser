@@ -8,13 +8,14 @@ import { useSidebar } from '../context/SidebarContext';
 
 // Screens
 import DashboardScreen from '../screens/DashboardScreen';
-import SIDScreen from '../screens/SIDScreen';
+import SIDNavigator from './SIDNavigator';
 import DAOScreen from '../screens/DAOScreen';
 import DappsScreen from '../screens/DappsScreen';
 import MyStorageScreen from '../screens/MyStorageScreen';
 import MyDomainsScreen from '../screens/MyDomainsScreen';
-import DeveloperPortalScreen from '../screens/DeveloperPortalScreen';
+import DevPortalNavigator from './DevPortalNavigator';
 import ExplorerNavigator from './ExplorerNavigator';
+import SovSwapNavigator from './SovSwapNavigator';
 
 const SearchIcon = ({ color }: { color: string }) => (
   <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
@@ -66,7 +67,14 @@ const DevIcon = ({ color }: { color: string }) => (
   </Svg>
 );
 
-export const DesktopNavigator: React.FC = () => {
+const SwapIcon = ({ color }: { color: string }) => (
+  <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
+    <Path d="M7 10L12 15L17 10" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+    <Path d="M17 14L12 9L7 14" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
+export const DesktopNavigator: React.FC<any> = ({ navigation: rootNavigation }) => {
   const [activeTab, setActiveTab] = useState('search');
   const { isCollapsed } = useSidebar();
 
@@ -75,6 +83,7 @@ export const DesktopNavigator: React.FC = () => {
     { id: 'sid', label: 'Wallet (SID)', icon: <WalletIcon color={activeTab === 'sid' ? colors.primary : colors.text_secondary} /> },
     { id: 'dao', label: 'Governance', icon: <DaoIcon color={activeTab === 'dao' ? colors.primary : colors.text_secondary} /> },
     { id: 'store', label: 'dApp Store', icon: <StoreIcon color={activeTab === 'store' ? colors.primary : colors.text_secondary} /> },
+    { id: 'swap', label: 'Swap', icon: <SwapIcon color={activeTab === 'swap' ? colors.primary : colors.text_secondary} /> },
     { id: 'explorer', label: 'Block Explorer', icon: <ExplorerIcon color={activeTab === 'explorer' ? colors.primary : colors.text_secondary} /> },
   ];
 
@@ -86,12 +95,13 @@ export const DesktopNavigator: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'search': return <DashboardScreen navigation={mockNavigation} />;
-      case 'sid': return <SIDScreen navigation={mockNavigation} />;
+      case 'sid': return <SIDNavigator />;
       case 'dao': return <DAOScreen navigation={mockNavigation} />;
       case 'store': return <DappsScreen navigation={mockNavigation} />;
+      case 'swap': return <SovSwapNavigator />;
       case 'explorer': return <ExplorerNavigator />;
       case 'storage': return <MyStorageScreen navigation={mockNavigation} />;
-      case 'dev': return <DeveloperPortalScreen navigation={mockNavigation} />;
+      case 'dev': return <DevPortalNavigator />;
       default: return <DashboardScreen navigation={mockNavigation} />;
     }
   };
@@ -101,12 +111,22 @@ export const DesktopNavigator: React.FC = () => {
       console.log('Navigating to:', route, params);
       // Handle tab switching from within screens
       if (route === 'MyStorage') setActiveTab('storage');
-      if (route === 'DeveloperPortal') setActiveTab('dev');
-      if (route === 'Dashboard') setActiveTab('search');
-      if (route === 'SID') setActiveTab('sid');
+      else if (route === 'DeveloperPortal') setActiveTab('dev');
+      else if (route === 'Dashboard') setActiveTab('search');
+      else if (route === 'SID') setActiveTab('sid');
+      else if (route === 'Swap' || route === 'SwapTab') setActiveTab('swap');
+      else if (route === 'DAOMain') setActiveTab('dao');
+      else if (route === 'StoreMain') setActiveTab('store');
+      else if (route === 'ExplorerDashboard') setActiveTab('explorer');
+      else {
+        // Forward to root navigation for modals/global screens
+        rootNavigation.navigate(route, params);
+      }
     },
-    goBack: () => console.log('Go back'),
-    canGoBack: () => false,
+    goBack: () => rootNavigation.goBack(),
+    canGoBack: () => rootNavigation.canGoBack(),
+    reset: (state: any) => rootNavigation.reset(state),
+    dispatch: (action: any) => rootNavigation.dispatch(action),
   };
 
   return (

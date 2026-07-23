@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { DesktopNavigator } from "./navigation/DesktopNavigator";
+import RootNavigator from "./navigation/RootNavigator";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { SidebarProvider } from "./context/SidebarContext";
@@ -14,7 +14,7 @@ function App() {
         <SidebarProvider>
           <NavigationContainer>
             <View style={[styles.container, { height: '100vh', width: '100vw', overflow: 'hidden' }]}>
-              <DesktopNavigator />
+              <RootNavigator />
             </View>
           </NavigationContainer>
         </SidebarProvider>

@@ -14,7 +14,9 @@ import {
   Badge,
   Select,
   Checkbox,
+  HeaderBar,
 } from '../components';
+import { ScrollView } from 'react-native';
 import { useAuth, useNodeConnection } from '../hooks';
 import { useTranslation } from '../i18n';
 import { colors, spacing, typography } from '../theme';
@@ -213,15 +215,20 @@ const CreateIdentityScreen = ({ navigation }: CreateIdentityScreenProps) => {
   }
 
   return (
-    <ScreenLayout
-      paddingTop={spacing.xl}
-      safeAreaEdges={['top', 'bottom']}
-      onBack={() => navigation.goBack()}
-      backLabel={t.app.back ?? 'Back'}
-      keyboardAvoiding
-    >
-      <Column gap="xl">
-        {/* Node Connection Status */}
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Create Identity"
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
+      />
+      <ScreenLayout
+        onBack={() => navigation.goBack()}
+        backLabel={t.app.back ?? 'Back'}
+        keyboardAvoiding
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="xl" style={{ paddingBottom: spacing.xl }}>
+            {/* Node Connection Status */}
         <Card>
           <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
             <Column gap="xs" style={{ flex: 1 }}>
@@ -448,9 +455,10 @@ const CreateIdentityScreen = ({ navigation }: CreateIdentityScreenProps) => {
             },
           ]}
         />
-      </Column>
-
+        </Column>
+      </ScrollView>
     </ScreenLayout>
+  </View>
   );
 };
 

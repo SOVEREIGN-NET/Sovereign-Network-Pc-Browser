@@ -26,6 +26,7 @@ import {
   DetailRow,
   SectionLabel,
   GuestEntryCard,
+  HeaderBar,
 } from '../components';
 import { useAuth, useAsyncData } from '../hooks';
 import { useTranslation } from '../i18n';
@@ -444,9 +445,14 @@ const ProfileScreen = ({ navigation }: any) => {
   const createdDate = formatCreatedDate(currentIdentity.createdAt);
 
   return (
-    <ScreenLayout paddingTop={spacing.md}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Column gap="md" style={{ paddingBottom: spacing.xl }}>
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="My Identity"
+        onBackPress={() => navigation?.goBack()}
+      />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="md" style={{ paddingBottom: spacing.xl }}>
           {/* Identity Card */}
           <View style={{ paddingHorizontal: spacing.sm }}>
             <Card style={{ marginHorizontal: 0 }}>
@@ -726,6 +732,7 @@ const ProfileScreen = ({ navigation }: any) => {
         onUpgrade={handleUpgrade}
       />
     </ScreenLayout>
+    </View>
   );
 };
 

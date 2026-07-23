@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button, Card, FormField, Text, LoadingView } from '../components';
+import { Button, Card, FormField, Text, LoadingView, HeaderBar } from '../components';
 import { colors, spacing, typography, borderRadius } from '../theme';
 import domainService from '../services/DomainService';
 import { useAuth } from '../hooks/useAuth';
@@ -378,41 +378,10 @@ const DomainRegistrationScreen: React.FC<DomainRegistrationScreenProps> = ({
       style={{ flex: 1, backgroundColor: colors.bg_darkest }}
     >
       <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-        {/* Header */}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.md,
-            paddingTop: insets.top + spacing.md,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: typography.size.lg,
-              fontWeight: typography.weight.semibold,
-              color: colors.text_primary,
-            }}
-          >
-            Register Domain
-          </Text>
-          <TouchableOpacity
-            onPress={onClose}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Text
-              style={{
-                fontSize: typography.size.lg,
-                color: colors.text_secondary,
-                fontWeight: typography.weight.light,
-              }}
-            >
-              ✕
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <HeaderBar
+          title="Register Domain"
+          onBackPress={onClose}
+        />
 
         <ScrollView
           showsVerticalScrollIndicator={false}

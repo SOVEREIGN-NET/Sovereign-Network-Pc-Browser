@@ -70,7 +70,10 @@ const BookmarksScreen = ({ navigation }: any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <HeaderBar />
+      <HeaderBar
+        title="Bookmarks"
+        onBackPress={() => navigation.goBack()}
+      />
 
       <ScreenLayout paddingTop={spacing.md}>
         <ScrollView showsVerticalScrollIndicator={false}>

@@ -16,7 +16,9 @@ import {
   ErrorAlert,
   ActionFooter,
   PasswordField,
+  HeaderBar,
 } from '../components';
+import { ScrollView } from 'react-native';
 import { useAuth } from '../hooks';
 import { colors, spacing, typography, borderRadius } from '../theme';
 import { RootStackParamList } from '../types/navigation';
@@ -120,9 +122,19 @@ const MigrationSeedScreen = ({ navigation, route }: MigrationSeedScreenProps) =>
   };
 
   return (
-    <ScreenLayout>
-      <Column gap="xl">
-        {displayError && <ErrorAlert message={displayError} icon="❌" />}
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Migration Seed"
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
+      />
+      <ScreenLayout
+        onBack={() => navigation.goBack()}
+        keyboardAvoiding
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="xl" style={{ paddingBottom: spacing.xl }}>
+            {displayError && <ErrorAlert message={displayError} icon="❌" />}
 
         <Card style={{ backgroundColor: colors.bg_darker }}>
           <Column gap="xs">
@@ -363,8 +375,10 @@ const MigrationSeedScreen = ({ navigation, route }: MigrationSeedScreenProps) =>
               }]),
           ]}
         />
-      </Column>
+        </Column>
+      </ScrollView>
     </ScreenLayout>
+  </View>
   );
 };
 

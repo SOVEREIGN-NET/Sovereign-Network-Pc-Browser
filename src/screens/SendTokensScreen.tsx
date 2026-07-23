@@ -11,6 +11,7 @@ import {
   ScreenLayout,
   FormField,
   LoadingView,
+  HeaderBar,
 } from '../components';
 import { useAuth, useWalletList } from '../hooks';
 import { getTokenRegistry } from '../hooks/useTokenRegistry';
@@ -567,774 +568,500 @@ const SendTokensScreen = ({ navigation, route }: any) => {
   }
 
   return (
-    <ScreenLayout paddingTop={spacing.md} paddingBottom={spacing.xl}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Column gap="lg" style={{ paddingHorizontal: spacing.sm }}>
-          {/* Title */}
-          <View>
-            <Text
-              style={{
-                fontSize: typography.size.lg,
-                fontWeight: typography.weight.semibold,
-                color: colors.text_primary,
-              }}
-            >
-              Send
-            </Text>
-            <Text
-              style={{
-                fontSize: typography.size.sm,
-                color: colors.text_secondary,
-                marginTop: spacing.xs,
-              }}
-            >
-              Transfer assets to another address
-            </Text>
-          </View>
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Send"
+        onBackPress={() => navigation.goBack()}
+      />
+      <ScreenLayout paddingTop={spacing.md} paddingBottom={spacing.xl}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="lg" style={{ paddingHorizontal: spacing.sm }}>
+            {/* Error message */}
+            {tokensError && (
+              <Card style={{ backgroundColor: colors.error + '20' }}>
+                <Text
+                  style={{ color: colors.error, fontSize: typography.size.sm }}
+                >
+                  {tokensError}
+                </Text>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onPress={loadAllTokens}
+                  style={{ marginTop: spacing.md }}
+                >
+                  Retry
+                </Button>
+              </Card>
+            )}
 
-          {/* Error message */}
-          {tokensError && (
-            <Card style={{ backgroundColor: colors.error + '20' }}>
-              <Text
-                style={{ color: colors.error, fontSize: typography.size.sm }}
-              >
-                {tokensError}
-              </Text>
-              <Button
-                variant="primary"
-                size="sm"
-                onPress={loadAllTokens}
-                style={{ marginTop: spacing.md }}
-              >
-                Retry
-              </Button>
-            </Card>
-          )}
-
-          {/* Transfer status */}
-          {transferStatus.message && (
-            <Card
-              style={{
-                backgroundColor:
-                  transferStatus.type === 'success'
-                    ? colors.success + '20'
-                    : colors.error + '20',
-              }}
-            >
-              <Text
+            {/* Transfer status */}
+            {transferStatus.message && (
+              <Card
                 style={{
-                  color:
+                  backgroundColor:
                     transferStatus.type === 'success'
-                      ? colors.success
-                      : colors.error,
-                  fontSize: typography.size.sm,
-                }}
-              >
-                {transferStatus.message}
-              </Text>
-            </Card>
-          )}
-
-          {/* Token Selection */}
-          <View>
-            <Row
-              style={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: spacing.md,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: typography.size.xs,
-                  fontWeight: typography.weight.semibold,
-                  color: colors.text_secondary,
-                  paddingHorizontal: spacing.sm,
-                }}
-              >
-                SELECT ASSET
-              </Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('TokenManagement')}
-                style={{
-                  paddingHorizontal: spacing.sm,
-                  paddingVertical: spacing.xs,
-                  borderRadius: borderRadius.sm,
-                  backgroundColor: colors.bg_darker,
-                  borderWidth: 1,
-                  borderColor: colors.primary + '40',
+                      ? colors.success + '20'
+                      : colors.error + '20',
                 }}
               >
                 <Text
                   style={{
-                    fontSize: typography.size.xs,
-                    fontWeight: typography.weight.semibold,
-                    color: colors.primary,
+                    color:
+                      transferStatus.type === 'success'
+                        ? colors.success
+                        : colors.error,
+                    fontSize: typography.size.sm,
                   }}
                 >
-                  Manage
+                  {transferStatus.message}
                 </Text>
-              </TouchableOpacity>
-            </Row>
+              </Card>
+            )}
 
-            <Column gap="xs">
-              {allTokens.map(token => (
-                <TouchableOpacity
-                  key={token.id}
-                  onPress={() => {
-                    setSelectedToken(token);
-                    setTransferForm(prev => ({ ...prev, amount: '', memo: '' }));
-                    setErrors({});
-                    if (token.type === 'sov' && wallets?.length > 0) {
-                      setSelectedFromWallet(getDefaultSovWalletId());
-                    }
-                  }}
-                  style={{
-                    paddingVertical: spacing.md,
-                    paddingHorizontal: spacing.md,
-                    borderRadius: borderRadius.lg,
-                    backgroundColor:
-                      selectedToken?.id === token.id
-                        ? colors.primary + '20'
-                        : colors.bg_darker,
-                    borderWidth: 1.5,
-                    borderColor:
-                      selectedToken?.id === token.id
-                        ? colors.primary
-                        : colors.border,
-                  }}
-                >
-                  <Row
-                    style={{
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Column gap="xs" style={{ flex: 1 }}>
-                      <Row style={{ alignItems: 'center', gap: spacing.xs }}>
-                        <Text
-                          style={{
-                            fontSize: typography.size.sm,
-                            fontWeight: typography.weight.semibold,
-                            color: colors.text_primary,
-                          }}
-                        >
-                          {token.symbol}
-                        </Text>
-                        {token.balance === 0 && token.type === 'custom' && (
-                          <Text
-                            style={{
-                              fontSize: typography.size.xs,
-                              color: colors.primary,
-                              fontWeight: typography.weight.semibold,
-                            }}
-                          >
-                            (Tracked)
-                          </Text>
-                        )}
-                      </Row>
-                      <Text
-                        style={{
-                          fontSize: typography.size.xs,
-                          color: colors.text_secondary,
-                        }}
-                      >
-                        {token.name}
-                      </Text>
-                    </Column>
-                    <Column gap="xs" style={{ alignItems: 'flex-end' }}>
-                      <Text
-                        style={{
-                          fontSize: typography.size.sm,
-                          fontWeight: typography.weight.bold,
-                          color: colors.text_primary,
-                        }}
-                      >
-                        {token.symbol === 'SOV' ? `SOV ${token.balance.toFixed(2)}` : `${token.balance.toFixed(2)} ${token.symbol}`}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: typography.size.xs,
-                          color: colors.text_secondary,
-                        }}
-                      >
-                        Available
-                      </Text>
-                    </Column>
-                  </Row>
-                </TouchableOpacity>
-              ))}
-              {allTokens.length === 0 && (
-                <View style={{ padding: spacing.md, alignItems: 'center', backgroundColor: colors.bg_darker, borderRadius: borderRadius.lg, borderStyle: 'dashed', borderWidth: 1, borderColor: colors.border }}>
-                   <Text style={{ color: colors.text_tertiary, fontSize: 12 }}>No assets found</Text>
-                </View>
-              )}
-            </Column>
-          </View>
-
-          {/* Choose from Contacts — compact shortcut, sits between token list
-              and the transfer form. Hidden when the address book is empty. */}
-          {selectedToken && addressBookEntries.length > 0 && (
-            <TouchableOpacity
-              onPress={() => setShowAddressBook(true)}
-              style={{
-                alignSelf: 'center',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: spacing.xs,
-                paddingVertical: spacing.xs,
-                paddingHorizontal: spacing.md,
-                borderRadius: borderRadius.full,
-                borderWidth: 1,
-                borderColor: colors.primary + '60',
-                backgroundColor: colors.primary + '10',
-              }}
-            >
-              <Text style={{ fontSize: typography.size.sm, color: colors.primary }}>
-                👥
-              </Text>
-              <Text
-                style={{
-                  fontSize: typography.size.sm,
-                  fontWeight: typography.weight.semibold,
-                  color: colors.primary,
-                }}
-              >
-                Choose from Contacts
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {/* Transfer Form */}
-          <Card>
-            <View style={{ marginBottom: spacing.lg }}>
-              <Text
-                style={{
-                  fontSize: typography.size.sm,
-                  fontWeight: typography.weight.semibold,
-                  color: colors.text_primary,
-                  marginBottom: spacing.xs,
-                }}
-              >
-                Selected Asset Balance
-              </Text>
+            {/* Token Selection */}
+            <View>
               <Row
                 style={{
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  marginBottom: spacing.md,
                 }}
               >
                 <Text
                   style={{
-                    fontSize: typography.size.lg,
+                    fontSize: typography.size.xs,
+                    fontWeight: typography.weight.semibold,
                     color: colors.text_secondary,
+                    paddingHorizontal: spacing.sm,
                   }}
                 >
-                  {selectedToken ? `${selectedToken.name} (${selectedToken.symbol})` : 'No token selected'}
+                  SELECT ASSET
                 </Text>
-                <Text
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('TokenManagement')}
                   style={{
-                    fontSize: typography.size.lg,
-                    fontWeight: typography.weight.bold,
-                    color: colors.primary,
+                    paddingHorizontal: spacing.sm,
+                    paddingVertical: spacing.xs,
+                    borderRadius: borderRadius.sm,
+                    backgroundColor: colors.bg_darker,
+                    borderWidth: 1,
+                    borderColor: colors.primary + '40',
                   }}
                 >
-                  {selectedToken ? (selectedToken.symbol === 'SOV' ? `SOV ${selectedToken.balance.toFixed(2)}` : selectedToken.balance.toFixed(2)) : '0.00'}
-                </Text>
-              </Row>
-            </View>
-
-            {/* Recipient Input */}
-            <View>
-              <Text
-                style={{
-                  fontSize: typography.size.xs,
-                  color: colors.text_secondary,
-                  marginBottom: spacing.xs,
-                }}
-              >
-                Recipient Wallet Address
-              </Text>
-              <FormField
-                label=""
-                placeholder="64 hex characters"
-                value={transferForm.recipient}
-                onChangeText={text => {
-                  setTransferForm(prev => ({ ...prev, recipient: text }));
-                  if (errors.recipient) {
-                    setErrors(prev => ({ ...prev, recipient: undefined }));
-                  }
-                }}
-                error={errors.recipient}
-                editable={!isTransferring}
-              />
-              {transferForm.recipient.trim().length > 0 && (() => {
-                const saved = findByAddress(transferForm.recipient.trim());
-                return saved ? (
-                  <Text style={{ fontSize: typography.size.sm, color: colors.primary, marginTop: spacing.xs }}>
-                    {saved.name}
+                  <Text
+                    style={{
+                      fontSize: typography.size.xs,
+                      fontWeight: typography.weight.semibold,
+                      color: colors.primary,
+                    }}
+                  >
+                    Manage
                   </Text>
-                ) : null;
-              })()}
+                </TouchableOpacity>
+              </Row>
+
+              <Column gap="xs">
+                {allTokens.map(token => (
+                  <TouchableOpacity
+                    key={token.id}
+                    onPress={() => {
+                      setSelectedToken(token);
+                      setTransferForm(prev => ({ ...prev, amount: '', memo: '' }));
+                      setErrors({});
+                      if (token.type === 'sov' && wallets?.length > 0) {
+                        setSelectedFromWallet(getDefaultSovWalletId());
+                      }
+                    }}
+                    style={{
+                      paddingVertical: spacing.md,
+                      paddingHorizontal: spacing.md,
+                      borderRadius: borderRadius.lg,
+                      backgroundColor:
+                        selectedToken?.id === token.id
+                          ? colors.primary + '20'
+                          : colors.bg_darker,
+                      borderWidth: 1.5,
+                      borderColor:
+                        selectedToken?.id === token.id
+                          ? colors.primary
+                          : colors.border,
+                    }}
+                  >
+                    <Row
+                      style={{
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Column gap="xs" style={{ flex: 1 }}>
+                        <Row style={{ alignItems: 'center', gap: spacing.xs }}>
+                          <Text
+                            style={{
+                              fontSize: typography.size.sm,
+                              fontWeight: typography.weight.semibold,
+                              color: colors.text_primary,
+                            }}
+                          >
+                            {token.symbol}
+                          </Text>
+                          {token.balance === 0 && token.type === 'custom' && (
+                            <Text
+                              style={{
+                                fontSize: typography.size.xs,
+                                color: colors.primary,
+                                fontWeight: typography.weight.semibold,
+                              }}
+                            >
+                              (Tracked)
+                            </Text>
+                          )}
+                        </Row>
+                        <Text
+                          style={{
+                            fontSize: typography.size.xs,
+                            color: colors.text_secondary,
+                          }}
+                        >
+                          {token.name}
+                        </Text>
+                      </Column>
+                      <Column gap="xs" style={{ alignItems: 'flex-end' }}>
+                        <Text
+                          style={{
+                            fontSize: typography.size.sm,
+                            fontWeight: typography.weight.bold,
+                            color: colors.text_primary,
+                          }}
+                        >
+                          {token.symbol === 'SOV' ? `SOV ${token.balance.toFixed(2)}` : `${token.balance.toFixed(2)} ${token.symbol}`}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: typography.size.xs,
+                            color: colors.text_secondary,
+                          }}
+                        >
+                          Available
+                        </Text>
+                      </Column>
+                    </Row>
+                  </TouchableOpacity>
+                ))}
+                {allTokens.length === 0 && (
+                  <View style={{ padding: spacing.md, alignItems: 'center', backgroundColor: colors.bg_darker, borderRadius: borderRadius.lg, borderStyle: 'dashed', borderWidth: 1, borderColor: colors.border }}>
+                    <Text style={{ color: colors.text_tertiary, fontSize: 12 }}>No assets found</Text>
+                  </View>
+                )}
+              </Column>
             </View>
 
-            {/* Amount */}
-            <FormField
-              label="Amount"
-              placeholder="0"
-              value={transferForm.amount}
-              onChangeText={text => {
-                setTransferForm(prev => ({ ...prev, amount: text }));
-                if (errors.amount) {
-                  setErrors(prev => ({ ...prev, amount: undefined }));
-                }
-              }}
-              keyboardType="decimal-pad"
-              error={errors.amount}
-              editable={!isTransferring}
-            />
-
-            {/* Memo (Optional) */}
-            <FormField
-              label="Memo (Optional)"
-              placeholder="Add a note to this transfer"
-              value={transferForm.memo}
-              onChangeText={text => {
-                setTransferForm(prev => ({ ...prev, memo: text }));
-              }}
-              multiline
-              numberOfLines={2}
-              editable={!isTransferring}
-            />
-
-            {/* Action Buttons */}
-            {selectedToken && (selectedToken.symbol || '').toUpperCase() === 'CBE' && (
-              <View
+            {/* Choose from Contacts — compact shortcut */}
+            {selectedToken && addressBookEntries.length > 0 && (
+              <TouchableOpacity
+                onPress={() => setShowAddressBook(true)}
                 style={{
-                  marginTop: spacing.md,
-                  padding: spacing.md,
-                  borderRadius: borderRadius.base,
-                  backgroundColor: colors.warning + '15',
+                  alignSelf: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: spacing.xs,
+                  paddingVertical: spacing.xs,
+                  paddingHorizontal: spacing.md,
+                  borderRadius: borderRadius.full,
                   borderWidth: 1,
-                  borderColor: colors.warning + '55',
+                  borderColor: colors.primary + '60',
+                  backgroundColor: colors.primary + '10',
                 }}
               >
+                <Text style={{ fontSize: typography.size.sm, color: colors.primary }}>
+                  👥
+                </Text>
                 <Text
                   style={{
                     fontSize: typography.size.sm,
-                    color: colors.warning,
                     fontWeight: typography.weight.semibold,
+                    color: colors.primary,
+                  }}
+                >
+                  Choose from Contacts
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Transfer Form */}
+            <Card>
+              <View style={{ marginBottom: spacing.lg }}>
+                <Text
+                  style={{
+                    fontSize: typography.size.sm,
+                    fontWeight: typography.weight.semibold,
+                    color: colors.text_primary,
                     marginBottom: spacing.xs,
                   }}
                 >
-                  CBE transfers temporarily unavailable
+                  Selected Asset Balance
                 </Text>
+                <Row
+                  style={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: typography.size.lg,
+                      color: colors.text_secondary,
+                    }}
+                  >
+                    {selectedToken ? `${selectedToken.name} (${selectedToken.symbol})` : 'No token selected'}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: typography.size.lg,
+                      fontWeight: typography.weight.bold,
+                      color: colors.primary,
+                    }}
+                  >
+                    {selectedToken ? (selectedToken.symbol === 'SOV' ? `SOV ${selectedToken.balance.toFixed(2)}` : selectedToken.balance.toFixed(2)) : '0.00'}
+                  </Text>
+                </Row>
+              </View>
+
+              {/* Recipient Input */}
+              <View>
                 <Text
                   style={{
                     fontSize: typography.size.xs,
                     color: colors.text_secondary,
-                  }}
-                >
-                  Sending is disabled while the network verification path is being updated. Receiving CBE still works.
-                </Text>
-              </View>
-            )}
-            <Row gap="md" style={{ marginTop: spacing.lg }}>
-              <Button
-                variant="primary"
-                onPress={handleReview}
-                loading={isTransferring}
-                disabled={
-                  isTransferring ||
-                  !selectedToken ||
-                  (selectedToken.symbol || '').toUpperCase() === 'CBE'
-                }
-                style={{ flex: 1 }}
-              >
-                Send
-              </Button>
-              <Button
-                variant="secondary"
-                onPress={() => navigation.goBack()}
-                disabled={isTransferring}
-                style={{ flex: 1 }}
-              >
-                Cancel
-              </Button>
-            </Row>
-          </Card>
-        </Column>
-      </ScrollView>
-
-      {/* Address book picker */}
-      <Modal visible={showAddressBook} transparent animationType="slide" onRequestClose={() => setShowAddressBook(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' }}>
-          <View
-            style={{
-              backgroundColor: colors.bg_dark,
-              borderTopLeftRadius: borderRadius.xl,
-              borderTopRightRadius: borderRadius.xl,
-              paddingTop: spacing.md,
-              paddingBottom: spacing['2xl'],
-              maxHeight: '80%',
-            }}
-          >
-            {/* Drag handle */}
-            <View style={{ alignItems: 'center', marginBottom: spacing.md }}>
-              <View
-                style={{
-                  width: 40,
-                  height: 4,
-                  borderRadius: 2,
-                  backgroundColor: colors.bg_lighter,
-                }}
-              />
-            </View>
-
-            {/* Header */}
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                paddingHorizontal: spacing.lg,
-                marginBottom: spacing.lg,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: typography.size.xl,
-                  fontWeight: typography.weight.bold,
-                  color: colors.text_primary,
-                }}
-              >
-                Contacts
-              </Text>
-              <TouchableOpacity
-                onPress={() => setShowAddressBook(false)}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  backgroundColor: colors.bg_lighter,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text style={{ color: colors.text_primary, fontSize: 16, fontWeight: '600' }}>X</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Contact list */}
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: spacing.lg }}
-            >
-              {addressBookEntries.map((entry, index) => (
-                <TouchableOpacity
-                  key={entry.id}
-                  onPress={() => {
-                    setTransferForm(prev => ({ ...prev, recipient: entry.address }));
-                    setShowAddressBook(false);
-                  }}
-                  activeOpacity={0.6}
-                  style={{
-                    paddingVertical: spacing.lg,
-                    paddingHorizontal: spacing.md,
-                    borderRadius: borderRadius.base,
-                    backgroundColor: index % 2 === 0 ? colors.bg_darker : 'transparent',
                     marginBottom: spacing.xs,
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: typography.size.md,
-                      fontWeight: typography.weight.semibold,
-                      color: colors.text_primary,
-                      marginBottom: spacing.xs,
-                    }}
-                  >
-                    {entry.name}
-                  </Text>
+                  Recipient Wallet Address
+                </Text>
+                <FormField
+                  label=""
+                  placeholder="64 hex characters"
+                  value={transferForm.recipient}
+                  onChangeText={text => {
+                    setTransferForm(prev => ({ ...prev, recipient: text }));
+                    if (errors.recipient) {
+                      setErrors(prev => ({ ...prev, recipient: undefined }));
+                    }
+                  }}
+                  error={errors.recipient}
+                  editable={!isTransferring}
+                />
+                {transferForm.recipient.trim().length > 0 && (() => {
+                  const saved = findByAddress(transferForm.recipient.trim());
+                  return saved ? (
+                    <Text style={{ fontSize: typography.size.sm, color: colors.primary, marginTop: spacing.xs }}>
+                      {saved.name}
+                    </Text>
+                  ) : null;
+                })()}
+              </View>
+
+              {/* Amount */}
+              <FormField
+                label="Amount"
+                placeholder="0"
+                value={transferForm.amount}
+                onChangeText={text => {
+                  setTransferForm(prev => ({ ...prev, amount: text }));
+                  if (errors.amount) {
+                    setErrors(prev => ({ ...prev, amount: undefined }));
+                  }
+                }}
+                keyboardType="decimal-pad"
+                error={errors.amount}
+                editable={!isTransferring}
+              />
+
+              {/* Memo (Optional) */}
+              <FormField
+                label="Memo (Optional)"
+                placeholder="Add a note to this transfer"
+                value={transferForm.memo}
+                onChangeText={text => {
+                  setTransferForm(prev => ({ ...prev, memo: text }));
+                }}
+                multiline
+                numberOfLines={2}
+                editable={!isTransferring}
+              />
+
+              {/* Action Buttons */}
+              {selectedToken && (selectedToken.symbol || '').toUpperCase() === 'CBE' && (
+                <View
+                  style={{
+                    marginTop: spacing.md,
+                    padding: spacing.md,
+                    borderRadius: borderRadius.base,
+                    backgroundColor: colors.warning + '15',
+                    borderWidth: 1,
+                    borderColor: colors.warning + '55',
+                  }}
+                >
                   <Text
                     style={{
                       fontSize: typography.size.sm,
-                      color: colors.text_secondary,
-                      fontFamily: 'Courier',
+                      color: colors.warning,
+                      fontWeight: typography.weight.semibold,
+                      marginBottom: spacing.xs,
                     }}
-                    numberOfLines={1}
                   >
-                    {entry.address}
+                    CBE transfers temporarily unavailable
                   </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
+                  <Text
+                    style={{
+                      fontSize: typography.size.xs,
+                      color: colors.text_secondary,
+                    }}
+                  >
+                    Sending is disabled while the network verification path is being updated. Receiving CBE still works.
+                  </Text>
+                </View>
+              )}
+              <Row gap="md" style={{ marginTop: spacing.lg }}>
+                <Button
+                  variant="primary"
+                  onPress={handleReview}
+                  loading={isTransferring}
+                  disabled={
+                    isTransferring ||
+                    !selectedToken ||
+                    (selectedToken.symbol || '').toUpperCase() === 'CBE'
+                  }
+                  style={{ flex: 1 }}
+                >
+                  Send
+                </Button>
+                <Button
+                  variant="secondary"
+                  onPress={() => navigation.goBack()}
+                  disabled={isTransferring}
+                  style={{ flex: 1 }}
+                >
+                  Cancel
+                </Button>
+              </Row>
+            </Card>
+          </Column>
+        </ScrollView>
 
-      {/* Save contact prompt (shown after successful transfer) */}
-      <Modal visible={!!savingContact} transparent animationType="fade" onRequestClose={() => { setSavingContact(null); navigation.goBack(); }}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', paddingHorizontal: spacing.lg }}>
+        <Modal visible={showAddressBook} transparent animationType="slide" onRequestClose={() => setShowAddressBook(false)}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' }}>
             <View
               style={{
                 backgroundColor: colors.bg_dark,
-                borderRadius: borderRadius.xl,
-                borderWidth: 1,
-                borderColor: colors.border,
-                padding: spacing.xl,
+                borderTopLeftRadius: borderRadius.xl,
+                borderTopRightRadius: borderRadius.xl,
+                paddingTop: spacing.md,
+                paddingBottom: spacing['2xl'],
+                maxHeight: '80%',
               }}
             >
-              <Text
-                style={{
-                  fontSize: typography.size.xl,
-                  fontWeight: typography.weight.bold,
-                  color: colors.text_primary,
-                  marginBottom: spacing.md,
-                }}
-              >
-                Save contact?
-              </Text>
-              <Text
-                style={{
-                  fontSize: typography.size.sm,
-                  color: colors.text_secondary,
-                  fontFamily: 'Courier',
-                  marginBottom: spacing.lg,
-                }}
-                numberOfLines={2}
-              >
-                {savingContact?.address}
-              </Text>
-              <TextInput
-                value={newContactName}
-                onChangeText={setNewContactName}
-                placeholder="Contact name"
-                placeholderTextColor={colors.text_placeholder}
-                style={{
-                  backgroundColor: colors.bg_darker,
-                  borderRadius: borderRadius.base,
-                  borderWidth: 1,
-                  borderColor: colors.border,
-                  paddingHorizontal: spacing.md,
-                  paddingVertical: spacing.lg,
-                  color: colors.text_primary,
-                  fontSize: typography.size.md,
-                  marginBottom: spacing.lg,
-                }}
-                autoFocus
-              />
-              <Row style={{ gap: spacing.md }}>
-                <TouchableOpacity
-                  onPress={() => { setSavingContact(null); navigation.goBack(); }}
-                  style={{
-                    flex: 1,
-                    paddingVertical: spacing.lg,
-                    borderRadius: borderRadius.base,
-                    borderWidth: 1.5,
-                    borderColor: colors.border,
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: colors.text_secondary,
-                      fontSize: typography.size.md,
-                      fontWeight: typography.weight.semibold,
-                    }}
-                  >
-                    Skip
-                  </Text>
+              <View style={{ alignItems: 'center', marginBottom: spacing.md }}>
+                <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: colors.bg_lighter }} />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: spacing.lg, marginBottom: spacing.lg }}>
+                <Text style={{ fontSize: typography.size.xl, fontWeight: typography.weight.bold, color: colors.text_primary }}>Contacts</Text>
+                <TouchableOpacity onPress={() => setShowAddressBook(false)} style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: colors.bg_lighter, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ color: colors.text_primary, fontSize: 16, fontWeight: '600' }}>X</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={async () => {
-                    if (!newContactName.trim()) return;
-                    await addToBook(newContactName.trim(), savingContact!.address);
-                    setSavingContact(null);
-                    navigation.goBack();
-                  }}
-                  style={{
-                    flex: 1,
-                    paddingVertical: spacing.lg,
-                    borderRadius: borderRadius.base,
-                    backgroundColor: colors.primary,
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: colors.bg_darkest,
-                      fontSize: typography.size.md,
-                      fontWeight: typography.weight.bold,
+              </View>
+              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: spacing.lg }}>
+                {addressBookEntries.map((entry, index) => (
+                  <TouchableOpacity
+                    key={entry.id}
+                    onPress={() => {
+                      setTransferForm(prev => ({ ...prev, recipient: entry.address }));
+                      setShowAddressBook(false);
                     }}
+                    activeOpacity={0.6}
+                    style={{ paddingVertical: spacing.lg, paddingHorizontal: spacing.md, borderRadius: borderRadius.base, backgroundColor: index % 2 === 0 ? colors.bg_darker : 'transparent', marginBottom: spacing.xs }}
                   >
-                    Save
-                  </Text>
-                </TouchableOpacity>
-              </Row>
+                    <Text style={{ fontSize: typography.size.md, fontWeight: typography.weight.semibold, color: colors.text_primary, marginBottom: spacing.xs }}>{entry.name}</Text>
+                    <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary, fontFamily: 'Courier' }} numberOfLines={1}>{entry.address}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
           </View>
-        </KeyboardAvoidingView>
-      </Modal>
+        </Modal>
 
-      {/* ── Confirmation Modal ── */}
-      <Modal
-        visible={showConfirmation}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowConfirmation(false)}
-      >
-        <View style={{
-          flex: 1,
-          backgroundColor: 'rgba(0,0,0,0.7)',
-          justifyContent: 'center',
-          paddingHorizontal: spacing.lg,
-        }}>
-          <View style={{
-            backgroundColor: colors.bg_dark,
-            borderRadius: borderRadius.lg,
-            overflow: 'hidden',
-          }}>
-            {/* Header */}
-            <View style={{
-              backgroundColor: colors.primary,
-              paddingVertical: spacing.md,
-              paddingHorizontal: spacing.lg,
-            }}>
-              <Text style={{
-                color: colors.bg_darkest,
-                fontSize: typography.size.md,
-                fontWeight: typography.weight.bold,
-                textAlign: 'center',
-              }}>
-                Confirm Transfer
-              </Text>
+        <Modal visible={!!savingContact} transparent animationType="fade" onRequestClose={() => { setSavingContact(null); navigation.goBack(); }}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', paddingHorizontal: spacing.lg }}>
+              <View style={{ backgroundColor: colors.bg_dark, borderRadius: borderRadius.xl, borderWidth: 1, borderColor: colors.border, padding: spacing.xl }}>
+                <Text style={{ fontSize: typography.size.xl, fontWeight: typography.weight.bold, color: colors.text_primary, marginBottom: spacing.md }}>Save contact?</Text>
+                <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary, fontFamily: 'Courier', marginBottom: spacing.lg }} numberOfLines={2}>{savingContact?.address}</Text>
+                <TextInput
+                  value={newContactName}
+                  onChangeText={setNewContactName}
+                  placeholder="Contact name"
+                  placeholderTextColor={colors.text_placeholder}
+                  style={{ backgroundColor: colors.bg_darker, borderRadius: borderRadius.base, borderWidth: 1, borderColor: colors.border, paddingHorizontal: spacing.md, paddingVertical: spacing.lg, color: colors.text_primary, fontSize: typography.size.md, marginBottom: spacing.lg }}
+                  autoFocus
+                />
+                <Row style={{ gap: spacing.md }}>
+                  <TouchableOpacity onPress={() => { setSavingContact(null); navigation.goBack(); }} style={{ flex: 1, paddingVertical: spacing.lg, borderRadius: borderRadius.base, borderWidth: 1.5, borderColor: colors.border, alignItems: 'center' }}>
+                    <Text style={{ color: colors.text_secondary, fontSize: typography.size.md, fontWeight: typography.weight.semibold }}>Skip</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={async () => {
+                      if (!newContactName.trim()) return;
+                      await addToBook(newContactName.trim(), savingContact!.address);
+                      setSavingContact(null);
+                      navigation.goBack();
+                    }}
+                    style={{ flex: 1, paddingVertical: spacing.lg, borderRadius: borderRadius.base, backgroundColor: colors.primary, alignItems: 'center' }}
+                  >
+                    <Text style={{ color: colors.bg_darkest, fontSize: typography.size.md, fontWeight: typography.weight.bold }}>Save</Text>
+                  </TouchableOpacity>
+                </Row>
+              </View>
             </View>
+          </KeyboardAvoidingView>
+        </Modal>
 
-            {/* Details */}
-            <View style={{ padding: spacing.lg }}>
-              {/* Amount */}
-              <View style={{ alignItems: 'center', marginBottom: spacing.lg }}>
-                <Text style={{
-                  fontSize: 32,
-                  fontWeight: typography.weight.bold,
-                  color: colors.text_primary,
-                }}>
-                  {transferForm.amount} {selectedToken?.symbol}
-                </Text>
+        <Modal visible={showConfirmation} transparent animationType="fade" onRequestClose={() => setShowConfirmation(false)}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', paddingHorizontal: spacing.lg }}>
+            <View style={{ backgroundColor: colors.bg_dark, borderRadius: borderRadius.lg, overflow: 'hidden' }}>
+              <View style={{ backgroundColor: colors.primary, paddingVertical: spacing.md, paddingHorizontal: spacing.lg }}>
+                <Text style={{ color: colors.bg_darkest, fontSize: typography.size.md, fontWeight: typography.weight.bold, textAlign: 'center' }}>Confirm Transfer</Text>
               </View>
-
-              {/* Rows */}
-              <View style={{ gap: spacing.md }}>
-                <View style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: spacing.sm,
-                  borderBottomWidth: 1,
-                  borderBottomColor: `${colors.border}50`,
-                }}>
-                  <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary }}>
-                    To
-                  </Text>
-                  <Text style={{
-                    fontSize: typography.size.sm,
-                    color: colors.text_primary,
-                    fontFamily: 'Courier',
-                    maxWidth: '60%',
-                  }} numberOfLines={1} ellipsizeMode="middle">
-                    {transferForm.recipient}
-                  </Text>
+              <View style={{ padding: spacing.lg }}>
+                <View style={{ alignItems: 'center', marginBottom: spacing.lg }}>
+                  <Text style={{ fontSize: 32, fontWeight: typography.weight.bold, color: colors.text_primary }}>{transferForm.amount} {selectedToken?.symbol}</Text>
                 </View>
-
-                <View style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: spacing.sm,
-                  borderBottomWidth: 1,
-                  borderBottomColor: `${colors.border}50`,
-                }}>
-                  <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary }}>
-                    From
-                  </Text>
-                  <Text style={{
-                    fontSize: typography.size.sm,
-                    color: colors.text_primary,
-                    fontFamily: 'Courier',
-                    maxWidth: '60%',
-                  }} numberOfLines={1} ellipsizeMode="middle">
-                    {selectedFromWallet ?? 'Primary Wallet'}
-                  </Text>
+                <View style={{ gap: spacing.md }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: `${colors.border}50` }}>
+                    <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary }}>To</Text>
+                    <Text style={{ fontSize: typography.size.sm, color: colors.text_primary, fontFamily: 'Courier', maxWidth: '60%' }} numberOfLines={1} ellipsizeMode="middle">{transferForm.recipient}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: `${colors.border}50` }}>
+                    <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary }}>From</Text>
+                    <Text style={{ fontSize: typography.size.sm, color: colors.text_primary, fontFamily: 'Courier', maxWidth: '60%' }} numberOfLines={1} ellipsizeMode="middle">{selectedFromWallet ?? 'Primary Wallet'}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: `${colors.border}50` }}>
+                    <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary }}>Token</Text>
+                    <Text style={{ fontSize: typography.size.sm, color: colors.text_primary }}>{selectedToken?.name} ({selectedToken?.symbol})</Text>
+                  </View>
                 </View>
-
-                <View style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: spacing.sm,
-                  borderBottomWidth: 1,
-                  borderBottomColor: `${colors.border}50`,
-                }}>
-                  <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary }}>
-                    Token
-                  </Text>
-                  <Text style={{ fontSize: typography.size.sm, color: colors.text_primary }}>
-                    {selectedToken?.name} ({selectedToken?.symbol})
-                  </Text>
+                <View style={{ marginTop: spacing.lg, padding: spacing.sm, backgroundColor: `${colors.warning}15`, borderRadius: borderRadius.sm }}>
+                  <Text style={{ fontSize: typography.size.xs, color: colors.warning, textAlign: 'center' }}>Transactions are irreversible. Please verify the recipient address.</Text>
                 </View>
-
-                <View style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: spacing.sm,
-                }}>
-                  <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary }}>
-                    Network
-                  </Text>
-                  <Text style={{ fontSize: typography.size.sm, color: colors.text_primary }}>
-                    Sovereign Network
-                  </Text>
-                </View>
+                <Row gap="md" style={{ marginTop: spacing.lg }}>
+                  <Button variant="secondary" onPress={() => setShowConfirmation(false)} style={{ flex: 1 }}>Back</Button>
+                  <Button variant="primary" onPress={handleTransfer} style={{ flex: 1 }}>Confirm</Button>
+                </Row>
               </View>
-
-              {/* Warning */}
-              <View style={{
-                marginTop: spacing.lg,
-                padding: spacing.sm,
-                backgroundColor: `${colors.warning}15`,
-                borderRadius: borderRadius.sm,
-              }}>
-                <Text style={{
-                  fontSize: typography.size.xs,
-                  color: colors.warning,
-                  textAlign: 'center',
-                }}>
-                  Transactions are irreversible. Please verify the recipient address.
-                </Text>
-              </View>
-
-              {/* Buttons */}
-              <Row gap="md" style={{ marginTop: spacing.lg }}>
-                <Button
-                  variant="secondary"
-                  onPress={() => setShowConfirmation(false)}
-                  style={{ flex: 1 }}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="primary"
-                  onPress={handleTransfer}
-                  style={{ flex: 1 }}
-                >
-                  Confirm
-                </Button>
-              </Row>
             </View>
           </View>
-        </View>
-      </Modal>
-
-    </ScreenLayout>
+        </Modal>
+      </ScreenLayout>
+    </View>
   );
 };
 

@@ -72,7 +72,10 @@ const HistoryScreen = ({ navigation }: any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <HeaderBar />
+      <HeaderBar
+        title="History"
+        onBackPress={() => navigation.goBack()}
+      />
 
       <ScreenLayout paddingTop={spacing.md}>
         <ScrollView showsVerticalScrollIndicator={false}>

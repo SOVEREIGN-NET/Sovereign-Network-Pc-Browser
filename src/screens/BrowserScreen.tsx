@@ -6,7 +6,6 @@ import React, {
   useRef,
 } from 'react';
 import { View, ActivityIndicator, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Card,
   Text,
@@ -528,12 +527,11 @@ const BrowserScreen = ({ route, navigation }: any) => {
 
   if (isZhtp) {
     return (
-      <SafeAreaView
+      <View
         style={{ flex: 1, backgroundColor: colors.bg_darkest }}
-        edges={['top']}
       >
         <View style={{ flex: 1 }}>{renderZhtp()}</View>
-      </SafeAreaView>
+      </View>
     );
   }
 

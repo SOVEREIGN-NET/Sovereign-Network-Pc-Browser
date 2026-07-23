@@ -7,7 +7,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   ScrollView,
-  Text,
   TouchableOpacity,
   Alert,
   ActivityIndicator,
@@ -16,6 +15,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { HeaderBar, Text } from '../components';
 import { colors, spacing, typography, borderRadius } from '../theme';
 import tokenService from '../services/TokenService';
 import type { TokenInfoResponse } from '../types/token';
@@ -150,20 +150,10 @@ const TokenManagementScreen = ({ navigation }: any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      {/* Header */}
-      <View style={{ paddingTop: insets.top + spacing.md, paddingHorizontal: spacing.md, paddingBottom: spacing.md, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <View>
-          <Text style={{ fontSize: typography.size.xl, fontWeight: typography.weight.bold, color: colors.text_primary }}>
-            My Tokens
-          </Text>
-          <Text style={{ fontSize: typography.size.sm, color: colors.text_secondary, marginTop: 2 }}>
-            {tokens.length} tracked
-          </Text>
-        </View>
-        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-          <Text style={{ fontSize: typography.size.lg, color: colors.text_secondary }}>✕</Text>
-        </TouchableOpacity>
-      </View>
+      <HeaderBar
+        title="Manage Tokens"
+        onBackPress={() => navigation.goBack()}
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}

@@ -76,7 +76,7 @@ const DAOScreen = ({ navigation }: any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <HeaderBar />
+      <HeaderBar title="Governance" />
 
       <ScreenLayout testID="dao-screen">
         {/* Weekly Universal Basic Redistribution Treasury Section */}

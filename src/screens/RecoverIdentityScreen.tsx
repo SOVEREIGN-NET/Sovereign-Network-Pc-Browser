@@ -19,7 +19,9 @@ import {
   ActionFooter,
   FormField,
   PasswordField,
+  HeaderBar,
 } from '../components';
+import { ScrollView } from 'react-native';
 import { useAuth } from '../hooks';
 import { useTranslation } from '../i18n';
 import { colors, spacing, typography, borderRadius } from '../theme';
@@ -231,14 +233,20 @@ const RecoverIdentityScreen = (props: RecoverIdentityScreenProps) => {
   ];
 
   return (
-    <ScreenLayout
-      safeAreaEdges={['top', 'bottom']}
-      onBack={() => props.navigation.goBack()}
-      backLabel={t.app.back ?? 'Back'}
-      keyboardAvoiding
-    >
-      <Column gap="xl">
-        {/* Error Message */}
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Recover Identity"
+        onBackPress={() => props.navigation.goBack()}
+        showHamburger={false}
+      />
+      <ScreenLayout
+        onBack={() => props.navigation.goBack()}
+        backLabel={t.app.back ?? 'Back'}
+        keyboardAvoiding
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="xl" style={{ paddingBottom: spacing.xl }}>
+            {/* Error Message */}
         {displayError && <ErrorAlert message={displayError} icon="❌" />}
         {showMigrationBanner && (
           <Card
@@ -603,8 +611,10 @@ const RecoverIdentityScreen = (props: RecoverIdentityScreenProps) => {
             ] : []),
           ]}
         />
-      </Column>
+        </Column>
+      </ScrollView>
     </ScreenLayout>
+  </View>
   );
 };
 

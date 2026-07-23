@@ -187,43 +187,11 @@ const DomainDetailScreen = ({ route, navigation }: any) => {
       style={{ flex: 1, backgroundColor: colors.bg_darkest }}
     >
       <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.md,
-            paddingTop: insets.top + spacing.md,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border,
-            backgroundColor: colors.bg_dark,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: typography.size.lg,
-              fontWeight: typography.weight.semibold,
-              color: colors.text_primary,
-            }}
-          >
-            {domainName}
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation?.goBack()}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Text
-              style={{
-                fontSize: typography.size.lg,
-                color: colors.text_secondary,
-                fontWeight: typography.weight.light,
-              }}
-            >
-              ✕
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <HeaderBar
+          title={domainName}
+          onBackPress={() => navigation?.goBack()}
+          showHamburger={false}
+        />
 
         <ScreenLayout paddingTop={spacing.md}>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -358,13 +326,14 @@ const DomainDetailScreen = ({ route, navigation }: any) => {
                       )}
 
                       <Button
-                        title={updating ? 'Updating...' : 'Update Content'}
                         onPress={handleUpdateContent}
                         disabled={updating}
                         style={{
                           backgroundColor: updating ? colors.text_secondary : colors.primary,
                         }}
-                      />
+                      >
+                        {updating ? 'Updating...' : 'Update Content'}
+                      </Button>
                     </View>
                   </Card>
                 </View>
@@ -377,10 +346,11 @@ const DomainDetailScreen = ({ route, navigation }: any) => {
 
                   <View style={{ gap: spacing.sm, paddingHorizontal: spacing.md, paddingBottom: spacing.md }}>
                     <Button
-                      title="Remove from List"
                       onPress={handleDeleteDomain}
                       variant="secondary"
-                    />
+                    >
+                      Remove from List
+                    </Button>
                   </View>
                 </Card>
               </View>

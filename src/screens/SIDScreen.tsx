@@ -931,6 +931,70 @@ const SIDScreen = ({ navigation, route }: any) => {
                   </View>
                 </TouchableOpacity>
               </View>
+
+              {/* Stake & Buy Buttons */}
+              <View
+                style={{
+                  paddingHorizontal: spacing.sm,
+                  flexDirection: 'row',
+                  gap: spacing.md,
+                  marginTop: spacing.md,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    paddingVertical: spacing.md,
+                    borderRadius: borderRadius.md,
+                    borderWidth: 1,
+                    borderColor: colors.border,
+                    backgroundColor: colors.bg_dark,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => navigation?.navigate('StakeTokens')}
+                >
+                  <Row align="center" gap="xs">
+                    <Text style={{ fontSize: 16 }}>🥩</Text>
+                    <Text
+                      style={{
+                        fontSize: typography.size.sm,
+                        fontWeight: '600',
+                        color: colors.text_secondary,
+                      }}
+                    >
+                      Stake SOV
+                    </Text>
+                  </Row>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    paddingVertical: spacing.md,
+                    borderRadius: borderRadius.md,
+                    borderWidth: 1,
+                    borderColor: colors.border,
+                    backgroundColor: colors.bg_dark,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => navigation?.navigate('BuyCrypto', { walletAddress: selectedWallet?.id })}
+                >
+                  <Row align="center" gap="xs">
+                    <Text style={{ fontSize: 16 }}>💳</Text>
+                    <Text
+                      style={{
+                        fontSize: typography.size.sm,
+                        fontWeight: '600',
+                        color: colors.text_secondary,
+                      }}
+                    >
+                      Buy Crypto
+                    </Text>
+                  </Row>
+                </TouchableOpacity>
+              </View>
             </Column>
 
             {/* RIGHT COLUMN: TABBED CONTENT */}

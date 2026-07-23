@@ -10,15 +10,16 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^7.6.0",
+    "@react-navigation/native": "^7.1.19",
+    "@react-navigation/native-stack": "^7.6.0",
     "@tauri-apps/api": "^1.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-native-web": "^0.19.13",
-    "react-native-svg": "^15.15.3",
     "react-native": "0.73.0",
-    "@react-navigation/native": "^7.1.19",
-    "@react-navigation/native-stack": "^7.6.0",
-    "@react-navigation/bottom-tabs": "^7.6.0"
+    "react-native-qrcode-svg": "^6.3.21",
+    "react-native-svg": "^15.15.3",
+    "react-native-web": "^0.19.13"
   },
   "overrides": {
     "react": "$react",

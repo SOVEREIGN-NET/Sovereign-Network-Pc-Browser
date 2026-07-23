@@ -210,6 +210,7 @@ const WelfareDaoDetailScreen = ({ route, navigation }: any) => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
       <HeaderBar
+        title={dao?.name || 'DAO Detail'}
         onBackPress={() => navigation.goBack()}
         showHamburger={false}
       />

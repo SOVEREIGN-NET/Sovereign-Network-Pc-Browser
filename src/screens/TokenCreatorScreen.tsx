@@ -14,6 +14,7 @@ import {
   FormField,
   Text,
   LoadingView,
+  HeaderBar,
 } from '../components';
 import { colors, spacing, typography, borderRadius } from '../theme/tokens';
 import tokenService from '../services/TokenService';
@@ -273,40 +274,10 @@ const TokenCreatorScreen: React.FC<TokenCreatorScreenProps> = ({ onClose, hideHe
       <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
         {/* Header */}
         {!hideHeader && (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingHorizontal: spacing.md,
-              paddingVertical: spacing.md,
-              paddingTop: insets.top + spacing.md,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: typography.size.lg,
-                fontWeight: typography.weight.semibold,
-                color: colors.text_primary,
-              }}
-            >
-              Create Token
-            </Text>
-            <TouchableOpacity
-              onPress={handleClose}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <Text
-                style={{
-                  fontSize: typography.size.lg,
-                  color: colors.text_secondary,
-                  fontWeight: typography.weight.light,
-                }}
-              >
-                ✕
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <HeaderBar
+            title="Create Token"
+            onBackPress={handleClose}
+          />
         )}
 
         <ScrollView

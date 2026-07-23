@@ -97,7 +97,11 @@ export const SovSwapMarketDetailScreen: React.FC<SovSwapMarketDetailScreenProps>
 
   return (
     <View style={styles.container}>
-      <HeaderBar onBackPress={() => navigation.goBack()} showHamburger={false} />
+      <HeaderBar
+        title={dao.tokenSymbol}
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
+      />
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Token header */}
         <View style={styles.heroWrap}>

@@ -142,7 +142,7 @@ const IdentityScreen = ({ navigation }: any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <HeaderBar />
+      <HeaderBar title="Identity" />
 
       <ScreenLayout paddingTop={spacing.xl}>
         <Column gap="xl">

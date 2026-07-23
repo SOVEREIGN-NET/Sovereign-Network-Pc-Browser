@@ -114,7 +114,10 @@ const DappsScreen: React.FC<any> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <HeaderBar onBackPress={navigation.canGoBack() ? () => navigation.goBack() : undefined} />
+      <HeaderBar
+        title="dApp Store"
+        onBackPress={navigation.canGoBack() ? () => navigation.goBack() : undefined}
+      />
 
       <ScreenLayout
         paddingTop={spacing.md}

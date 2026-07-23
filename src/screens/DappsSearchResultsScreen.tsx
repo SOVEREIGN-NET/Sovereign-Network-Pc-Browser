@@ -52,6 +52,7 @@ const DappsSearchResultsScreen: React.FC<any> = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
       <HeaderBar
+        title="App Search"
         onBackPress={() => navigation.goBack()}
       />
 

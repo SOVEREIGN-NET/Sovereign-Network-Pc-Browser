@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { Card, Text, Button, DetailRow, Column, LoadingView, ScreenLayout } from '../components';
+import { Card, Text, Button, DetailRow, Column, LoadingView, ScreenLayout, HeaderBar } from '../components';
 import { useTranslation } from '../i18n';
 import { colors, spacing, typography } from '../theme';
+import { ScrollView } from 'react-native';
 
 const ConfirmTransactionScreen = ({ navigation, route }: any) => {
   const { t } = useTranslation();
@@ -133,88 +134,95 @@ const ConfirmTransactionScreen = ({ navigation, route }: any) => {
   }
 
   return (
-    <ScreenLayout paddingTop={20}>
-      <Column gap="lg">
-          <Text variant="h1">{t.confirmTransaction.title}</Text>
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Confirm Transaction"
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
+      />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="lg" style={{ paddingBottom: spacing.xl }}>
+              {/* Transaction Details */}
+              <Card>
+                <Column gap="sm">
+                  <DetailRow label={t.confirmTransaction.currency} value={currency} />
+                  <DetailRow label={t.confirmTransaction.amount} value={`${amount} ${currency}`} />
+                  <DetailRow label={t.confirmTransaction.recipient} value={recipient.substring(0, 20) + '...'} />
+                  {memo && <DetailRow label={t.confirmTransaction.memo} value={memo} />}
+                  <DetailRow label={t.confirmTransaction.fee} value={`${fee.toFixed(8)} ${currency}`} />
+                </Column>
+              </Card>
 
-          {/* Transaction Details */}
-          <Card>
-            <Column gap="sm">
-              <DetailRow label={t.confirmTransaction.currency} value={currency} />
-              <DetailRow label={t.confirmTransaction.amount} value={`${amount} ${currency}`} />
-              <DetailRow label={t.confirmTransaction.recipient} value={recipient.substring(0, 20) + '...'} />
-              {memo && <DetailRow label={t.confirmTransaction.memo} value={memo} />}
-              <DetailRow label={t.confirmTransaction.fee} value={`${fee.toFixed(8)} ${currency}`} />
-            </Column>
-          </Card>
-
-          {/* Total Summary */}
-          <Card
-            style={{
-              backgroundColor: colors.bg_darker,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Text
+              {/* Total Summary */}
+              <Card
                 style={{
-                  fontSize: typography.size.lg,
-                  fontWeight: typography.weight.semibold,
-                  color: colors.text_primary,
+                  backgroundColor: colors.bg_darker,
                 }}
               >
-                {t.confirmTransaction.total}
-              </Text>
-              <Text
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: typography.size.lg,
+                      fontWeight: typography.weight.semibold,
+                      color: colors.text_primary,
+                    }}
+                  >
+                    {t.confirmTransaction.total}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: typography.size.lg,
+                      fontWeight: typography.weight.semibold,
+                      color: colors.primary,
+                    }}
+                  >
+                    {total.toFixed(8)} {currency}
+                  </Text>
+                </View>
+              </Card>
+
+              {/* Warning */}
+              <Card
                 style={{
-                  fontSize: typography.size.lg,
-                  fontWeight: typography.weight.semibold,
-                  color: colors.primary,
+                  backgroundColor: colors.warning,
                 }}
               >
-                {total.toFixed(8)} {currency}
-              </Text>
-            </View>
-          </Card>
+                <Text
+                  variant="body"
+                  style={{
+                    color: colors.bg_darkest,
+                  }}
+                >
+                  ⚠️ Please review all details carefully. Transactions cannot be reversed once confirmed.
+                </Text>
+              </Card>
 
-          {/* Warning */}
-          <Card
-            style={{
-              backgroundColor: colors.warning,
-            }}
-          >
-            <Text
-              variant="body"
-              style={{
-                color: colors.bg_darkest,
-              }}
-            >
-              ⚠️ Please review all details carefully. Transactions cannot be reversed once confirmed.
-            </Text>
-          </Card>
-
-          {/* Action Buttons */}
-          <View style={{ gap: spacing.sm }}>
-            <Button
-              onPress={handleConfirm}
-              disabled={isLoading}
-              style={{
-                opacity: isLoading ? 0.5 : 1,
-              }}
-            >
-              {isLoading ? t.confirmTransaction.confirmingButton : t.confirmTransaction.confirmButton}
-            </Button>
-            <Button onPress={() => navigation.goBack()} variant="outline" disabled={isLoading}>
-              {t.confirmTransaction.cancelButton}
-            </Button>
-          </View>
-      </Column>
-    </ScreenLayout>
+              {/* Action Buttons */}
+              <View style={{ gap: spacing.sm }}>
+                <Button
+                  onPress={handleConfirm}
+                  disabled={isLoading}
+                  style={{
+                    opacity: isLoading ? 0.5 : 1,
+                  }}
+                >
+                  {isLoading ? t.confirmTransaction.confirmingButton : t.confirmTransaction.confirmButton}
+                </Button>
+                <Button onPress={() => navigation.goBack()} variant="outline" disabled={isLoading}>
+                  {t.confirmTransaction.cancelButton}
+                </Button>
+              </View>
+          </Column>
+        </ScrollView>
+      </ScreenLayout>
+    </View>
   );
 };
 

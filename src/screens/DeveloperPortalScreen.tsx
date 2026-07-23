@@ -97,6 +97,7 @@ const DeveloperPortalScreen: React.FC<any> = () => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
       <HeaderBar
+        title="Developer Portal"
         onBackPress={() => navigation.goBack()}
         showHamburger={false}
       />

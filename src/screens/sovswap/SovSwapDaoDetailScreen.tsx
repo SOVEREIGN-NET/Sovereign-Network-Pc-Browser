@@ -41,7 +41,11 @@ export const SovSwapDaoDetailScreen: React.FC<SovSwapDaoDetailScreenProps> = ({
 
   return (
     <View style={styles.container}>
-      <HeaderBar onBackPress={() => navigation.goBack()} showHamburger={false} />
+      <HeaderBar
+        title={dao.tokenSymbol}
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
+      />
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Hero */}
         <View style={styles.heroWrap}>

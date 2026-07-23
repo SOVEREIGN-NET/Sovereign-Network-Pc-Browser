@@ -5,6 +5,8 @@ import {
   Platform,
   ViewProps,
   NativeSyntheticEvent,
+  View,
+  Text,
 } from 'react-native';
 
 type Web4NavigationEvent = NativeSyntheticEvent<{

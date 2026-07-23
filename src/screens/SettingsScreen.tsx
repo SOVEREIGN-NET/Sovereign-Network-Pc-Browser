@@ -12,6 +12,7 @@ import {
   Column,
   Row,
   ScreenLayout,
+  HeaderBar,
 } from '../components';
 import { useAuth } from '../hooks';
 import { useNativeSettings } from '../hooks/useNativeSettings';
@@ -131,6 +132,10 @@ const SettingsScreen = ({ navigation }: any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="App Settings"
+        onBackPress={() => navigation.goBack()}
+      />
       <ScreenLayout paddingTop={spacing.md}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Column gap="xl">

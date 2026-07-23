@@ -22,9 +22,7 @@ import {
 } from '../components';
 import { colors, spacing, typography, borderRadius, shadows } from '../theme/tokens';
 
-const UploadDappScreen: React.FC = () => {
-  const navigation = useNavigation<any>();
-
+const UploadDappScreen: React.FC<any> = ({ navigation }) => {
   // Form State
   const [appName, setAppName] = useState('');
   const [description, setDescription] = useState('');
@@ -80,6 +78,7 @@ const UploadDappScreen: React.FC = () => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
       <HeaderBar
+        title="Upload dApp"
         onBackPress={() => navigation.goBack()}
         showHamburger={false}
       />

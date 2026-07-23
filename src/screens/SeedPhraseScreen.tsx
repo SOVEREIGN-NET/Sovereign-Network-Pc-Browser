@@ -18,6 +18,7 @@ import {
   SectionLabel,
   Checkbox,
   Button,
+  HeaderBar,
 } from '../components';
 import { useTranslation } from '../i18n';
 import { useAuth } from '../hooks';
@@ -99,10 +100,16 @@ const SeedPhraseScreen = ({ navigation, route }: SeedPhraseScreenProps) => {
   };
 
   return (
-    <ScreenLayout paddingTop={spacing.md}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Column gap="lg">
-          <Card style={{ backgroundColor: colors.bg_darker }}>
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Your Seed Phrase"
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
+      />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="lg" style={{ paddingBottom: spacing.xl }}>
+            <Card style={{ backgroundColor: colors.bg_darker }}>
             <Column gap="xs">
               <Text
                 style={{
@@ -227,6 +234,7 @@ const SeedPhraseScreen = ({ navigation, route }: SeedPhraseScreenProps) => {
         ]}
       />
     </ScreenLayout>
+  </View>
   );
 };
 

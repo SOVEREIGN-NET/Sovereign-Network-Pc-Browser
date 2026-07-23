@@ -15,6 +15,7 @@ import {
   LoadingView,
   Column,
   ScreenLayout,
+  HeaderBar,
 } from '../components';
 import { colors, spacing, typography, borderRadius } from '../theme';
 import domainService from '../services/DomainService';
@@ -214,52 +215,10 @@ const MyDomainsScreen = ({ navigation }: any) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: spacing.md,
-          paddingVertical: spacing.md,
-          paddingTop: insets.top + spacing.md,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.border,
-          backgroundColor: colors.bg_dark,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: typography.size.lg,
-            fontWeight: typography.weight.semibold,
-            color: colors.text_primary,
-          }}
-        >
-          My Domains
-        </Text>
-        <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-          <Button
-            onPress={() => setDomainRegistrationVisible(true)}
-            size="sm"
-            variant="primary"
-          >
-            + Register
-          </Button>
-          <TouchableOpacity
-            onPress={() => navigation?.goBack()}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Text
-              style={{
-                fontSize: typography.size.lg,
-                color: colors.text_secondary,
-                fontWeight: typography.weight.normal,
-              }}
-            >
-              ✕
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <HeaderBar
+        title="My Domains"
+        onBackPress={() => navigation?.goBack()}
+      />
 
       <ScreenLayout paddingTop={spacing.md}>
         <ScrollView showsVerticalScrollIndicator={false}>

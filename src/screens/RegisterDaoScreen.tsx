@@ -89,7 +89,6 @@ export const RegisterDaoScreen: React.FC<any> = ({ navigation }) => {
             : 'Register DAO'
         }
         onBackPress={() => (mode ? setMode(null) : navigation.goBack())}
-        showHamburger={false}
       />
       {renderContent()}
     </View>

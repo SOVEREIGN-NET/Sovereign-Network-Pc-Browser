@@ -57,6 +57,7 @@ const Web4SearchResultsScreen: React.FC<any> = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
       <HeaderBar
+        title="Search Results"
         onBackPress={() => navigation.goBack()}
       />
 

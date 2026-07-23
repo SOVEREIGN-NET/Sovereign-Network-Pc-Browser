@@ -17,6 +17,7 @@ export default defineConfig({
       { find: "@react-native-async-storage/async-storage", replacement: path.resolve(__dirname, "src/native/AsyncStorageShim.ts") },
       { find: "react-native-linear-gradient", replacement: path.resolve(__dirname, "src/native/LinearGradientShim.tsx") },
       { find: "react-native-svg", replacement: path.resolve(__dirname, "src/native/shims/react-native-svg.tsx") },
+      { find: "react-native-qrcode-svg", replacement: path.resolve(__dirname, "src/native/shims/react-native-qrcode-svg.tsx") },
       { find: "src/native/NativeIdentityProvisioning", replacement: path.resolve(__dirname, "src/native/NativeIdentityProvisioning.ts") },
       { find: "react-native", replacement: path.resolve(__dirname, "src/native/shims/react-native.js") },
     ],

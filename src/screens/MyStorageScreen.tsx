@@ -140,7 +140,11 @@ const MyStorageScreen: React.FC = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
-      <HeaderBar onBackPress={() => navigation.goBack()} showHamburger={false} />
+      <HeaderBar
+        title="My Storage"
+        onBackPress={() => navigation.goBack()}
+        showHamburger={false}
+      />
 
       <ScreenLayout paddingTop={spacing.md}>
         <Column gap="lg" style={{ flex: 1 }}>

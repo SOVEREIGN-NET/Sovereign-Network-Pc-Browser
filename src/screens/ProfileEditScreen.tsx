@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert, TouchableOpacity } from 'react-native';
+import { View, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import {
   Card,
@@ -11,6 +11,7 @@ import {
   ScreenLayout,
   ErrorAlert,
   FormField,
+  HeaderBar,
 } from '../components';
 import { useAuth } from '../hooks';
 import { useTranslation } from '../i18n';
@@ -83,10 +84,16 @@ const ProfileEditScreen = ({ navigation }: any) => {
   }
 
   return (
-    <ScreenLayout paddingTop={20}>
-      <Column gap="xl">
-        {/* Error Message */}
-        {error && <ErrorAlert message={error} icon="❌" />}
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Edit Profile"
+        onBackPress={() => navigation?.goBack()}
+      />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="xl" style={{ paddingBottom: spacing.xl }}>
+            {/* Error Message */}
+            {error && <ErrorAlert message={error} icon="❌" />}
 
         {/* Tier Status Card */}
         <Card style={{ backgroundColor: isPremium ? colors.bg_darker : colors.bg_dark }}>
@@ -226,7 +233,9 @@ const ProfileEditScreen = ({ navigation }: any) => {
           {t.identity.profile.cancelButton}
         </Button>
       </Column>
-    </ScreenLayout>
+    </ScrollView>
+  </ScreenLayout>
+</View>
   );
 };
 

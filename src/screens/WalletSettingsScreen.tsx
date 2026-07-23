@@ -9,6 +9,7 @@ import {
   Row,
   LoadingView,
   ScreenLayout,
+  HeaderBar,
 } from '../components';
 import { useAuth } from '../hooks';
 import {
@@ -90,9 +91,15 @@ const WalletSettingsScreen = ({ navigation }: any) => {
   }
 
   return (
-    <ScreenLayout paddingTop={spacing.md}>
-      <Column gap="lg">
-        {/* Language switcher — colocated with the user's other
+    <View style={{ flex: 1, backgroundColor: colors.bg_darkest }}>
+      <HeaderBar
+        title="Settings"
+        onBackPress={() => navigation.goBack()}
+      />
+      <ScreenLayout paddingTop={spacing.md}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Column gap="lg" style={{ paddingBottom: spacing.xl }}>
+            {/* Language switcher — colocated with the user's other
             per-identity preferences. Always-visible segmented pill
             row (no dropdown) so the user can read and change locale
             in one tap without navigating anywhere. */}
@@ -398,8 +405,10 @@ const WalletSettingsScreen = ({ navigation }: any) => {
             </Column>
           </View>
         </Card>
-      </Column>
-    </ScreenLayout>
+          </Column>
+        </ScrollView>
+      </ScreenLayout>
+    </View>
   );
 };
 
