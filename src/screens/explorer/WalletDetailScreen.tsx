@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, ActivityIndicator, Clipboard, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, Row, Column, HeaderBar } from '../../components';
 import { colors, spacing, borderRadius, typography , createThemeReactiveStyles } from '../../theme';
 import { useAsyncData } from '../../hooks';
@@ -37,7 +36,10 @@ const WalletDetailScreen: React.FC<any> = ({ navigation, route }) => {
     <View style={styles.container}>
       <HeaderBar onBackPress={() => navigation.goBack()} />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.content}
+      >
         <View style={[styles.detailRow, { marginBottom: spacing.sm }]}>
           <Text variant="caption" style={styles.detailLabel}>Owner</Text>
           <CopyableHash value={ownerId} />
@@ -104,7 +106,7 @@ const makeStyles = () => StyleSheet.create({
     paddingHorizontal: spacing.lg, paddingVertical: spacing.sm,
     borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing['2xl'] },
+  content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing['3xl'], flexGrow: 1 },
   center: { alignItems: 'center', paddingVertical: spacing['3xl'] },
   detailRow: {
     paddingVertical: spacing.sm, paddingHorizontal: spacing.sm,

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable, ActivityIndicator, Clipboard, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, Column, Row, Badge, HeaderBar } from '../../components';
 import { colors, spacing, borderRadius, typography , createThemeReactiveStyles } from '../../theme';
 import { useAsyncData } from '../../hooks';
@@ -208,7 +207,11 @@ const TransactionDetailScreen: React.FC<any> = ({ navigation, route }) => {
     <View style={styles.container}>
       <HeaderBar onBackPress={() => navigation.goBack()} />
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
         {loading && !merged && (
           <View style={styles.center}>
             <ActivityIndicator size="large" color={colors.primary} />
@@ -422,7 +425,7 @@ const makeStyles = () => StyleSheet.create({
     paddingHorizontal: spacing.lg, paddingVertical: spacing.sm,
     borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing['2xl'] },
+  content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing['3xl'], flexGrow: 1 },
   center: { alignItems: 'center', paddingVertical: spacing['3xl'] },
   amountHero: {
     flexDirection: 'row', alignItems: 'baseline', justifyContent: 'center',

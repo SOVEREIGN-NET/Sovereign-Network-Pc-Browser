@@ -8,7 +8,6 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, HeaderBar } from '../../components';
 import { colors, spacing, borderRadius, typography , createThemeReactiveStyles } from '../../theme';
 import { useAsyncData } from '../../hooks';
@@ -78,7 +77,10 @@ const SearchScreen: React.FC<any> = ({ navigation, route }) => {
     <View style={styles.container}>
       <HeaderBar onBackPress={() => navigation.goBack()} />
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.content}
+      >
         <View style={styles.searchBar}>
           <TextInput
             style={styles.searchInput}
@@ -152,7 +154,7 @@ const makeStyles = () => StyleSheet.create({
     paddingHorizontal: spacing.lg, paddingVertical: spacing.sm,
     borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing['2xl'] },
+  content: { padding: spacing.lg, gap: spacing.md, paddingBottom: spacing['3xl'], flexGrow: 1 },
   center: { alignItems: 'center', paddingVertical: spacing['3xl'] },
   searchBar: {
     flexDirection: 'row', backgroundColor: colors.bg_dark,

@@ -8,7 +8,6 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, Row, Column, Badge, HeaderBar } from '../../components';
 import { colors, spacing, borderRadius, typography , createThemeReactiveStyles } from '../../theme';
 import { useAsyncData } from '../../hooks';
@@ -55,7 +54,11 @@ const ExplorerDashboardScreen: React.FC<any> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <HeaderBar />
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Search */}
         <View style={styles.searchBar}>
           <TextInput
@@ -214,7 +217,8 @@ const makeStyles = () => StyleSheet.create({
   content: {
     padding: spacing.lg,
     gap: spacing.md,
-    paddingBottom: spacing['2xl'],
+    paddingBottom: spacing['3xl'],
+    flexGrow: 1,
   },
   searchBar: {
     flexDirection: 'row',

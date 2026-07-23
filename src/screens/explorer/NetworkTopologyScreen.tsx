@@ -13,7 +13,6 @@
 
 import React, { useMemo, useState } from 'react';
 import { View, ScrollView, Pressable, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Card, Row, Column, Badge, RefreshRing, HeaderBar } from '../../components';
 import { TopologyMap } from '../../components/organisms/TopologyMap';
 import { ZDNS_HOST } from '../../config';
@@ -267,6 +266,7 @@ const NetworkTopologyScreen: React.FC<{ navigation: { goBack: () => void } }> = 
       <HeaderBar onBackPress={() => navigation.goBack()} />
 
       <ScrollView
+        style={{ flex: 1 }}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
@@ -383,7 +383,8 @@ const makeStyles = () => ({
   content: {
     padding: spacing.lg,
     gap: spacing.md,
-    paddingBottom: spacing['2xl'],
+    paddingBottom: spacing['3xl'],
+    flexGrow: 1,
   },
   row: {
     paddingVertical: spacing.sm,
