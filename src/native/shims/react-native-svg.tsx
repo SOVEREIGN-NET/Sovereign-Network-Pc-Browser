@@ -38,10 +38,14 @@ export const Rect = ({ style, ...props }: any) => <rect style={flattenStyle(styl
 export const G = ({ style, ...props }: any) => <g style={flattenStyle(style)} {...props} />;
 export const Defs = ({ style, ...props }: any) => <defs style={flattenStyle(style)} {...props} />;
 export const LinearGradient = ({ style, ...props }: any) => <linearGradient style={flattenStyle(style)} {...props} />;
+export const RadialGradient = ({ style, ...props }: any) => <radialGradient style={flattenStyle(style)} {...props} />;
 export const Stop = ({ style, ...props }: any) => <stop style={flattenStyle(style)} {...props} />;
 export const Polygon = ({ style, ...props }: any) => <polygon style={flattenStyle(style)} {...props} />;
 export const Ellipse = ({ style, ...props }: any) => <ellipse style={flattenStyle(style)} {...props} />;
 export const Line = ({ style, ...props }: any) => <line style={flattenStyle(style)} {...props} />;
+export const Text = ({ style, ...props }: any) => <text style={flattenStyle(style)} {...props} />;
+export const TSpan = ({ style, ...props }: any) => <tspan style={flattenStyle(style)} {...props} />;
+
 
 
 
