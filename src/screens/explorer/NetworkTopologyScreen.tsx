@@ -362,7 +362,7 @@ const NetworkTopologyScreen: React.FC<{ navigation: { goBack: () => void } }> = 
           </Card>
         ) : null}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
